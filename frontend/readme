@@ -1,0 +1,4 @@
+시작하는 법
+study directory 에서
+npm run frontend - 프론트 실행
+npm run backend - 백 실행
