@@ -20,7 +20,6 @@ class Template extends Component {
       value: 0
     }
     
-
     this.searchUpdated = this.searchUpdated.bind(this);
     this.buttonClicked = this.buttonClicked.bind(this);
   }

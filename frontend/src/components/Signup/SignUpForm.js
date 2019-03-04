@@ -14,7 +14,6 @@ class SignUpForm extends Component {
     // formFieldInput : 해당 객체의 property에 사용자가 각 칸에 입력한 값들을 저장한다.
     // formFieldValid : 각 칸에 입력된 값 (formFiledInput 객체의 properties)의 상태를 저장한다(null, error, warning etc)  
     // formFieldMessage : 유효성 검사를 통과하지 못한 칸 아래에 나타낼 오류 메시지를 저장한다. 
-
     this.state = {
       formFieldInput : 
       {
