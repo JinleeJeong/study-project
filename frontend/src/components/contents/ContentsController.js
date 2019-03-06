@@ -33,8 +33,10 @@ class ContentsController extends Component {
     Object.keys(dataInObject).map((key) => {
       return formData.append(key, dataInObject[key]);
     });
-
+    
     await this.context.actions.addContents(formData);
+    console.log(formData)
+    console.log('hello')
   }
 
   async componentDidMount() {
