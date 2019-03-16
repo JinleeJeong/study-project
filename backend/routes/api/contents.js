@@ -35,7 +35,7 @@ router.get('/', (req, res, next) => {
 
 /* SAVE Contents formData로 들어온 데이터 저장 + imageUrl스키마 필드에 파일 경로 저장*/
 router.post('/', upload, (req, res, next) => {  
-  Contents.create({...req.body, imageUrl: req.file.path}, (err, post) => {
+  Contents.create({...req.body, categories: req.body.categories.splice(","), imageUrl: req.file.path}, (err, post) => {
     // console.log(req);
     if (err) return next(err);
     upload(req, res, () => {
@@ -54,7 +54,7 @@ router.get('/representation1', (req, res, next) => {
     //console.log(res);
     res.json(contents);
   }).sort({views : -1})   
-    .where('category').in(['면접'])
+    .where('categories').in(['면접'])
     .limit(4);
 });
 
@@ -65,7 +65,7 @@ router.get('/representation2', (req, res, next) => {
     res.json(contents);
   })
   .sort({views : -1})
-  .where('category').in(['영어 회화'])
+  .where('categories').in(['영어'])
   .limit(4);
 });
 
