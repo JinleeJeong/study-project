@@ -46,7 +46,14 @@ router.post('/', upload, (req, res, next) => {
     });
   });
 });
-
+///////////
+router.post('/participants',(req, res, next) => {  
+  Contents.create({...req.body}, (err, post) => {
+    //console.log(req);
+    if (err) return next(err);
+  });
+});
+/////
 router.get('/r1', (req, res, next) => { 
   Contents.find((err, contents) => {
     if (err) return next(err);
@@ -77,6 +84,9 @@ router.get('/detail/:id', (req,res,next) => {
     //console.log(res);
     res.json(contents);
   })});
-  
+
+  router.get('/users/:id', function (req, res) {
+    res.send('user id: ' + req.params.id); 
+  });
 
 module.exports = router;

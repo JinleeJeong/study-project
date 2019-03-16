@@ -10,6 +10,7 @@ const ContentsSchema = new Schema({
   imageUrl: String,
   createdAt : {type: Date, default: utc},
   views : {type:Number, default : 0},
-});
+  Participants: Array,
+  });
 
 module.exports = mongoose.model("Contents", ContentsSchema);

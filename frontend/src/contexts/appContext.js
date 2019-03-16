@@ -29,6 +29,9 @@ export default class AppContextProvider extends Component {
 
   actions = {
     addContents: formData => apiClient.post('/contents', formData),
+    //
+    addParticipants: formData => apiClient.post('/participants', formData),
+    //
     getContentsR1: () => apiClient.get('/contents/r1'),
     getContentsR2: () => apiClient.get('/contents/r2'),
     getContentsByCategory: searchTerm => apiClient.get(`/contents/context/${searchTerm}`), //메인 검색창에서 카테고리 검색 시 데이터 보여줌

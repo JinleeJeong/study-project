@@ -18,7 +18,7 @@ const app = express();
 
 //Connect to Mongo
 const db = require('./config/keys').mongoURI;
-mongoose.connect(db)
+mongoose.connect(db,{ useNewUrlParser: true })
   .then(()=>console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
@@ -57,6 +57,7 @@ app.use('/api/users',users);
 app.use('/api/messages',messages);
 app.use('/', indexRouter);
 app.use('/api/contents', contents);
+app.use('/api/participants', contents);
 app.use('/coverimg', express.static('coverimg'));
 
 

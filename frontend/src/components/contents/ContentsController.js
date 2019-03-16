@@ -124,7 +124,7 @@ class ContentsController extends Component {
     Object.keys(dataInObject).map((key) => {
       return formData.append(key, dataInObject[key]);
     });
-
+    
     await this.context.actions.addContents(formData);
     this.props.history.push("/");
   }
