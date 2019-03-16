@@ -118,9 +118,7 @@ class Main extends Component {
                           } else return console.log('end');
                           })} 
 
-                      </div>
-
-                    
+                      </div>                    
                 </div>                        
               </div>
             </div>
@@ -133,7 +131,6 @@ class Main extends Component {
       </Fragment>
     )
   }
-  
 }
 
 export default Main;

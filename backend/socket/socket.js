@@ -8,14 +8,15 @@ sockets.init = (server,sessionMiddleware) => {
   
   // INSERT에 한해 Change Streams 동작 
   const pipeline = [
-    {$match: {operationType: "insert"}}
+    //{$match: {operationType : {$in:['insert','delete']}}}
+    {$match: {operationType :'insert'}}
   ]
   // Message Collection watch 
   const changeStream = Message.watch(pipeline, { fullDocument: 'updateLookup' });
   
   changeStream.on('change',(change)=>{
     // BroadCast 
-    io.emit('unseenMessage',{recipient: change.fullDocument.recipient, addNum : 1});    
+    io.emit('unseenMessage',{recipient: change.fullDocument.recipient});
     io.emit('test',change.fullDocument);
   });  
 

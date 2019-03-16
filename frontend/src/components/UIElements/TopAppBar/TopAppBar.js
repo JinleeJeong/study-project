@@ -30,7 +30,7 @@ class TopAppBar extends Component {
               회원가입
             </NavItem>
 
-            {this.context.state.signInInfo.status == null ? <NavItem style={{width:'100px'}}> </NavItem> : this.context.state.signInInfo.status == false ?
+            {this.context.state.signInInfo.status === null ? <NavItem style={{width:'100px'}}> </NavItem> : this.context.state.signInInfo.status === false ?
                 (<NavItem componentClass={Link} eventKey={1} href="/signin" to="/signin" > 로그인 </NavItem>)
                 : (<NavItem> <Avatar/> </NavItem>)}
 
@@ -40,5 +40,4 @@ class TopAppBar extends Component {
     );
   }
 }
-
 export default TopAppBar;

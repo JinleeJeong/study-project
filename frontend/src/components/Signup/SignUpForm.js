@@ -1,16 +1,66 @@
 import React, {Component} from 'react';
-import { Form, FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 import {withRouter} from 'react-router'
 import PropTypes from 'prop-types';
 import apiClient from '../../helpers/apiClient';
 import InputValidator from '../../helpers/InputValidator';
 import FormChecker from '../../helpers/FormChecker';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import { green,red } from '@material-ui/core/colors';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+
+
+const style = theme => ({
+  container: {
+    display: 'flex',
+    flexDirection: "column",
+    margin: 20,
+  },
+
+  input:{
+    width: 100
+  },
+
+  TextField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+
+  Button:{
+    width: 300,
+  },
+
+  ButtonMargin:{
+    marginTop:theme.spacing.unit,
+  },
+
+  ItemCenter: {
+    alignSelf:'center'
+  },
+
+  GoogleCol:{
+    color: 'white',
+    backgroundColor : red[600],
+    '&:hover': {
+      backgroundColor: red[800],
+    },
+  },
+
+  NaverCol:{
+    color: 'white',
+    backgroundColor: green[600],
+    '&:hover': {
+      backgroundColor: green[800],
+    },
+  }
+});
 
 class SignUpForm extends Component {
-
+  
   constructor(props){
     super(props);
-
     // formFieldInput : 해당 객체의 property에 사용자가 각 칸에 입력한 값들을 저장한다.
     // formFieldValid : 각 칸에 입력된 값 (formFiledInput 객체의 properties)의 상태를 저장한다(null, error, warning etc)  
     // formFieldMessage : 유효성 검사를 통과하지 못한 칸 아래에 나타낼 오류 메시지를 저장한다. 
@@ -36,8 +86,9 @@ class SignUpForm extends Component {
         passwordValError : '',
         passwordConfirmationValError : ''
       }
-  }
+    }
 
+  this.onBlur = this.onBlur.bind(this);
   this.onChange = this.onChange.bind(this);
   this.onSubmit = this.onSubmit.bind(this);
 }
@@ -49,11 +100,11 @@ registrationApiCall (){
     name: this.state.formFieldInput.userName,
   })
   .then(res => {
-    if (res.message == "회원가입에 성공했습니다."){
+    if (res.message === "회원가입에 성공했습니다."){
       console.log("성공");
       this.props.history.push('/signin');
     }
-    else if(res.message == "중복된 아이디입니다.")
+    else if(res.message === "중복된 아이디입니다.")
       this.setValidationResult({
         fieldName: 'email',
         isCorrect: 'error',
@@ -162,8 +213,7 @@ validateChangedField(fieldName,value){
   this.setValidationResult(validationResult);
 }
 
-onChange(e){
-  const name = e.target.name;
+onChange = name => e => {
   const value = e.target.value;
 
   this.setState(prevState =>({
@@ -171,7 +221,13 @@ onChange(e){
           ...prevState.formFieldInput,
           [name] : value
       }
-  }), () => this.validateChangedField (name,value) );
+  }));
+}
+
+onBlur = name => e => {
+  const value = e.target.value;
+
+  this.validateChangedField (name,value)
 }
 
 onSubmit(e){
@@ -184,7 +240,7 @@ onSubmit(e){
       userNameValid === null && 
       passwordValid === null &&
       passwordConfirmationValid === null) {
-    
+        console.log("hi")
         this.registrationApiCall();
   }
   else
@@ -192,75 +248,80 @@ onSubmit(e){
 }
 
 render (){
-  return (
-    <div>
-        <Form onSubmit = {this.onSubmit}>
-        <h1 className = "FormHeader">회원가입</h1>
-          <FormGroup
-            validationState = {this.state.formFieldValid.userNameValid} 
-          >
-          <ControlLabel>이름</ControlLabel>
-            <FormControl
-              value = {this.state.formFieldInput.userName}
-              onChange={this.onChange}
-              type = "text"
-              name="userName">
-            </FormControl>
-            <FormControl.Feedback/>
-              <HelpBlock>{this.state.formFieldMessage.userNameValError}</HelpBlock>
-            </FormGroup>
+  const { classes } = this.props;
 
-            <FormGroup
-              validationState = {this.state.formFieldValid.emailValid}
-            >
-            <ControlLabel>이메일 주소</ControlLabel>
-              <FormControl
-                value = {this.state.formFieldInput.email}
-                onChange={this.onChange}
-                type = "text"
-                name="email">
-              </FormControl>
-              <FormControl.Feedback/>
-                <HelpBlock>{this.state.formFieldMessage.emailValError}</HelpBlock>
-              </FormGroup>
-            <FormGroup
-              validationState = {this.state.formFieldValid.passwordValid}
-            >
-            <ControlLabel>비밀번호</ControlLabel>
-            <FormControl
-              value = {this.state.formFieldInput.password}
-              onChange={this.onChange}
-              type = "password"
-              name="password">
-            </FormControl>
-            <FormControl.Feedback/>
-              <HelpBlock>{this.state.formFieldMessage.passwordValError}</HelpBlock>
-            </FormGroup>
-            <FormGroup
-              style = {{marginBottom: '50px'}}
-              validationState = {this.state.formFieldValid.passwordConfirmationValid}
-            >
-            <ControlLabel>비밀번호 확인</ControlLabel>
-              <FormControl
-                value = {this.state.formFieldInput.passwordConfirmation}
-                onChange={this.onChange}
-                type = "password"
-                name="passwordConfirmation">
-              </FormControl>
-              <FormControl.Feedback/>
-              <HelpBlock>{this.state.formFieldMessage.passwordConfirmationValError}</HelpBlock>
-            </FormGroup>
-            <FormGroup>
-              <Button bsStyle = 'primary' block type = "submit">
-                확인
-              </Button>
-            </FormGroup>
-        </Form>
-        <div>
-            <a className = "removeLinkDec" href = "http://localhost:8080/api/users/google_auth"><Button style = {{marginBottom: '15px'}} bsStyle ="danger" block>구글 계정으로 시작하기</Button></a>
-            <a className = "removeLinkDec" href = "http://localhost:8080/api/users/naver_auth"><Button style = {{marginBottom: '15px'}} bsStyle ="success" block>네이버 계정으로 시작하기</Button></a>
-        </div>
-      </div>
+  return (
+    <Card
+      alignItems ="center"
+    >
+      <CardHeader style={{ textAlign: 'center' }} component="h5" title ="회원가입"/>
+      <form onSubmit = {this.onSubmit} className={classes.container}>
+        <TextField
+          id= "nameInp"
+          label= "이름"
+          className= {classes.textField}
+          value= {this.state.formFieldInput.userName}
+          error= {this.state.formFieldValid.userNameValid !== null ? true : null}
+          helperText = {this.state.formFieldMessage.userNameValError}
+          onChange= {this.onChange('userName')}
+          onBlur = {this.onBlur('userName')}
+          margin="normal"
+          InputProps={{classes: {input: classes.input}}}
+        >
+        </TextField>
+        <TextField
+          id= "emailInp"
+          label= "이메일 주소"
+          className= {classes.textField}
+          value= {this.state.formFieldInput.email}
+          error= {this.state.formFieldValid.emailValid !== null ? true : null}
+          helperText = {this.state.formFieldMessage.emailValError}
+          onChange= {this.onChange('email')}
+          onBlur = {this.onBlur('email')}
+          margin="normal"
+        >
+        </TextField>
+        <TextField
+          id= "passwordInp"
+          label= "비밀번호"
+          type="password"
+          className= {classes.textField}
+          value= {this.state.formFieldInput.password}
+          error= {this.state.formFieldValid.passwordValid !== null ? true : null}
+          helperText = {this.state.formFieldMessage.passwordValError}
+          onChange= {this.onChange('password')}
+          onBlur = {this.onBlur('password')}
+          margin="normal"
+        >
+        </TextField>
+        <TextField
+          id= "passwordConfirmationInp"
+          label= "비밀번호 확인"
+          type="password"
+          className= {classes.textField}
+          value= {this.state.formFieldInput.passwordConfirmation}
+          error= {this.state.formFieldValid.passwordConfirmationValid !== null ? true : null}
+          helperText = {this.state.formFieldMessage.passwordConfirmationValError}
+          onChange= {this.onChange('passwordConfirmation')}
+          onBlur = {this.onBlur('passwordConfirmation')}
+          margin="normal"
+        >
+        </TextField>
+          <Button
+            style = {{marginTop: 50}}
+            className = {`${classes.Button} ${classes.ItemCenter}`}
+            type="submit"
+            fullWidth
+            color="primary"
+            variant="contained"
+          >
+            가입
+          </Button>
+          <a className = {`removeLinkDec ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/google_auth"><Button variant="contained" className={`${classes.GoogleCol} ${classes.Button}`}>구글 계정으로 시작하기</Button></a>
+          <a className = {`removeLinkDec ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/naver_auth"><Button variant="contained" className={`${classes.NaverCol} ${classes.Button}`}>네이버 계정으로 시작하기</Button></a>
+      </form>
+
+    </Card>
     );
   }
 }
@@ -269,4 +330,4 @@ SignUpForm.propTypes = {
   history: PropTypes.object.isRequired
 }
 
-export default withRouter(SignUpForm)
+export default withStyles (style)(withRouter(SignUpForm))

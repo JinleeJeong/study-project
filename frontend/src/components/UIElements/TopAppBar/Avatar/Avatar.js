@@ -1,116 +1,117 @@
-import React, { Component,Fragment } from 'react';
-import {Dropdown, MenuItem, Image, Clearfix, Badge} from 'react-bootstrap';
-import './Avatar.css';
 import apiClient from '../../../../helpers/apiClient';
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import {AppContext} from '../../../../contexts/appContext';
-import axios from 'axios';
+import Avatar from '@material-ui/core/Avatar';
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { withStyles } from '@material-ui/core/styles';
+import Badge from '@material-ui/core/Badge';
+import Typography from '@material-ui/core/Typography';
 
-class Avatar extends Component{
+const styles = theme => ({
+  avatar: {
+    margin: 10,
+  },
+
+  padding: {
+    padding: `0 ${theme.spacing.unit * 2}px`,
+  },
+});
+
+class AvatarandDropdown extends React.Component {
   static contextType = AppContext;
 
-  constructor(props){
+  constructor (props){
     super(props);
     
     this.state = {
-      // 확인하지 않은 쪽지 개수
-      unseenNumber : 0
-    }
-    
-    this.onSelectHandler = this.onSelectHandler.bind(this);
+      anchorEl: null,
+    };
+
     this.getUnseenMessage = this.getUnseenMessage.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
-  getUnseenMessage(data){
-    if (data.recipient == this.context.state.signInInfo.id){
-      this.setState({
-        ...this.state,
-        unseenNumber: this.state.unseenNumber + data.addNum
-      });
-    }
-  }
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
 
-  onSelectHandler (eventKey){
-    if (eventKey == 'mypage'){
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  handleSelect = (option) => {
+    console.log(option)
+    if (option === 'mypage'){
       this.props.history.push('/mypage')
-    }else if (eventKey == 'mymessage'){
+    }else if (option === 'mymessage'){
       this.props.history.push('/mymessagepage');
-    }else {
+    }else if (option === 'signout') {
       apiClient.post('/users/signout')
       .then (()=> {console.log("logout");window.location.reload()})
     }
   }
-
-  /*
-  static getDerivedStateFromProps(nextProps, prevState){
-    console.log(nextProps)
-    console.log("j")
-    console.log(prevState)
-  } */
+  getUnseenMessage(data){
+    if (data.recipient === this.context.state.signInInfo.id)
+      this.context.actions.getUnseenMessage();
+  }
 
   componentDidMount(){
     console.log("avatar mounted..");
     // 현재 로그인 유저가 읽지 않은 쪽지 개수를 요청한다. 
 
-    apiClient.get('/messages/unseenmessages')
-    .then (unseenInfo =>{
-      this.setState({
-        ...this.state,
-        unseenNumber: unseenInfo.unseenNumber
-      }) 
-    });
-
+    this.context.actions.getUnseenMessage()
     this.context.state.socketConnection.io.on('unseenMessage',(data) => this.getUnseenMessage(data));
   }
 
   componentWillUnmount(){
     console.log("avatar unmount..");
-    console.log(this.context.state.socketConnection.io)
     this.context.state.socketConnection.io.removeListener('unseenMessage',this.getUnseenMessage);
   }
 
-  render (){
-    return (
-      <Dropdown>
-        <CustomToggle bsRole = "toggle">
-          <Image className = "userProfile" src = "http://image.newsis.com/2018/05/28/NISI20180528_0014122801_web.jpg"/>
-        </CustomToggle>
-        <Clearfix bsRole = "menu">
-          <MenuItem eventKey = "mypage" onSelect = {this.onSelectHandler}>마이페이지</MenuItem>
-          <MenuItem eventKey = "mymessage" onSelect = {this.onSelectHandler}> <span> 쪽지함 </span> <Badge style = {{color: 'white', background: '#ff4767'}}>{this.state.unseenNumber}</Badge></MenuItem>
-          <MenuItem eventKey = "signout" onSelect = {this.onSelectHandler}>로그아웃</MenuItem>
-        </Clearfix>
-      </Dropdown> )
-  }
+  render() {
+    const { anchorEl } = this.state;
+    const { classes } = this.props;
 
+    return (
+      <div>
+        <Button
+          aria-owns={anchorEl ? 'simple-menu' : undefined}
+          aria-haspopup="true"
+          onClick={this.handleClick}
+        >
+          <Avatar className = {classes.avatar} alt="Remy Sharp" src="http://dimg.donga.com/egc/CDB/KOREAN/Article/14/91/17/17/1491171704037.jpg"/>
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={this.handleClose}
+        >
+          <MenuItem onClick={()=>{this.handleSelect('mypage')}}>
+            <Typography className={classes.padding}>마이페이지</Typography>
+          </MenuItem>
+          <MenuItem onClick={()=>{this.handleSelect('mymessage')}}>
+            <Badge className={classes.margin} badgeContent={this.context.state.unseenMessage} color="primary">
+              <Typography className={classes.padding}>쪽지함</Typography>
+            </Badge>
+          </MenuItem>
+          <MenuItem onClick={()=>{this.handleSelect('signout')}}>
+            <Typography className={classes.padding}>로그아웃</Typography>
+          </MenuItem>
+        </Menu>
+      </div>
+    );
+  }
 }
 
 Avatar.propType = {
   history: PropTypes.object.isRequired,
 }
 
-export default withRouter(Avatar);
-
-class CustomToggle extends Component {
-  
-  constructor(props){
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(e) {
-    e.preventDefault();
-    this.props.onClick(e);
-    console.log(e);
-  }
-  
-  render() {
-    return (
-      <div onClick={this.handleClick}>
-        {this.props.children}
-      </div>
-    );
-  }
-}
-
+export default Object.assign(withRouter(withStyles(styles)(AvatarandDropdown)),{contextType: undefined});

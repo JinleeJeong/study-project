@@ -20,14 +20,31 @@ export default class AppContextProvider extends Component {
       email : ''
     },
 
+    unseenMessage : 0,
     // 소켓 Obj state 
     // io : null -> 소켓 연결 x 
     socketConnection : {
       io : null
+    },
+
+    Snackbar:{
+      open: false,
+      variant: 'success',
+      message: null,
+      anchorOrigin: {            
+        vertical: 'bottom',
+        horizontal: 'left',
+      }
     }
   }
 
   actions = {
+    setValue: (obj) =>{
+      this.setState({
+        ...this.state,
+        ...obj
+      });
+    },
     addContents: formData => apiClient.post('/contents', formData),
     getContentsR1: () => apiClient.get('/contents/r1'),
     getContentsR2: () => apiClient.get('/contents/r2'),
@@ -42,8 +59,7 @@ export default class AppContextProvider extends Component {
       });
     },
 
-    // 개발용/ 이후 간략하게 수정
-    checkAuth : async () => {
+    checkAuth: async () => {
       return apiClient.post('/users/checkAuth')
         .then(res => ({status: res.status, id: res.id, email: res.email}))
         .then(user => {
@@ -73,16 +89,56 @@ export default class AppContextProvider extends Component {
             })
           }
         })
-        .catch(err=> console.log(err)); 
-  }
+        .catch(err=> console.log(err))
+      },
 
+      getUnseenMessage: ()=>{
+        return apiClient.post('/messages/unseenmessages')
+          .then (unseenInfo =>{
+            this.setState({
+              ...this.state,
+              unseenMessage: unseenInfo.unseenNumber
+            })
+          });
+      },
+
+      snackbarOpenHandler :(
+        message,
+        variantName = 'success',
+        position = {            
+          vertical: 'top',
+          horizontal: 'center',
+        }
+      )=> {
+        this.setState({
+          ...this.state,
+          Snackbar:{
+            message,
+            open: true,
+            variant: variantName,
+            anchorOrigin: position,
+          }
+        });
+      },
+
+      snackbarCloseHandler : ()=> {
+        this.setState({
+          ...this.state,
+          Snackbar:{
+            ...this.state.Snackbar,
+            open: false,
+          }
+        });
+      }
     
-  }
+    }
 
   render() {
     const { children } = this.props;
     return(
-      <Provider value={{ state: this.state, actions: this.actions }}>{ children }</Provider>
+      <Provider value={{ state: this.state, actions: this.actions }}>
+        { children }
+      </Provider>
     );
   }
 }
