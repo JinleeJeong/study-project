@@ -7,7 +7,6 @@ import MyMessagePage from './components/MyMessage/MyMessagePage';
 import MyPage from './components/MyPage/MyPage';
 
 import Template from './components/UIElements/Template';
-import './App.css';
 import TopAppBar from './components/UIElements/TopAppBar/TopAppBar';
 import ContentsController from './components/contents/ContentsController';
 import ContentsListView from './components/contents/ContentsListView';
