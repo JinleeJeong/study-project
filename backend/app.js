@@ -12,13 +12,11 @@ const session = require('express-session');
 const passport = require('passport');
 const users = require('./routes/api/users');
 const messages = require('./routes/api/messages');
-
-
 const app = express();
 
 //Connect to Mongo
 const db = require('./config/keys').mongoURI;
-mongoose.connect(db)
+mongoose.connect(db,{ useNewUrlParser: true })
   .then(()=>console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
@@ -57,6 +55,7 @@ app.use('/api/users',users);
 app.use('/api/messages',messages);
 app.use('/', indexRouter);
 app.use('/api/contents', contents);
+app.use('/api/participants', contents);
 app.use('/coverimg', express.static('coverimg'));
 
 
@@ -73,7 +72,6 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render('error');

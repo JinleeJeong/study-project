@@ -1,12 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import './Main.css';
-import SearchInput, { createFilter } from 'react-search-input';
+import SearchInput from 'react-search-input';
 import movie from '../../images/movie.mp4'
 import {Link} from 'react-router-dom';
 import { AppContext } from '../../contexts/appContext';
 
-
-const KEYS_TO_FILTERS = ['title']
 
 class Main extends Component {
   static contextType = AppContext;
@@ -56,8 +54,6 @@ class Main extends Component {
   
   
   render() {
-    const filter = this.state.contents.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS));
-  
     return (
       <Fragment>
         <div className="_container">
