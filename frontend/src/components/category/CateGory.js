@@ -28,10 +28,9 @@ class CateGory extends Component {
     //     console.log(this.state.boards);
     //   });
     const { searchTerm } = this.state;
-    console.log(this.state.searchTerm);
     this.setState({
       boards: await this.context.actions.getContentsByCategory(searchTerm)
-    });
+    });  
   };
 
   
@@ -47,32 +46,40 @@ class CateGory extends Component {
     render() {
       const filter = this.state.boards.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
       console.log(this.state.searchTerm);
-      return (
-        <section className="infoma">
-        <div>
+      if(filter != ''){
+        return (
+          <section className="infoma">
           <div>
-            <div className="info_search">정렬 기준 : 정확도 순</div>
-            <div className="info_cate"> 
-                  <div className = "info_category_1">
-                  {filter.map((board, index) => {
-                    return (
-                      <div className = "info_divided" key={index}>
-                            
-                            <button className="info_button"><div className ="info_named"><img src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" width ="50%" height="50%"/></div></button>
-                            <div className ="info_title">{board.title}</div>
-                            <div className ="info_description">{board.description}</div>
-                            <div className ="info_category">{board.category}</div>
-                          </div>
-                  )
-                  })} 
-
-                  </div>
-            </div>                        
+            <div>
+              <div className="info_search">정렬 기준 : 정확도 순</div>
+              <div className="info_cate"> 
+                    <div className = "info_category_1">
+                    {filter.map((board, index) => {
+                      return (
+                        <div className = "info_divided" key={index}>
+                              
+                              <button className="info_button"><div className ="info_named"><img src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" width ="50%" height="50%"/></div></button>
+                              <div className ="info_title">{board.title}</div>
+                              <div className ="info_description">{board.description}</div>
+                              <div className ="info_category">{board.category}</div>
+                            </div>
+                    )
+                    })} 
+  
+                    </div>
+              </div>                        
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+          
+        )
+      }
+      else {
+      return (
+        <div><h3>Error</h3></div>
       );
     }
+  }
 }
 
 export default CateGory;

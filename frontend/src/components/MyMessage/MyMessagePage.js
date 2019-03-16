@@ -1,8 +1,6 @@
-import React, {Component, /*Fragment*/} from 'react';
+import React, {Component} from 'react';
 import './MyMessagePage.css';
-// import socketIOClient from "socket.io-client";
 import Inbox from './Inbox';
-// import axios from 'axios';
 import { AppContext } from '../../contexts/appContext';
 import apiClient from '../../helpers/apiClient';
 

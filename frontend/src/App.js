@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {BrowserRouter, Route, } from 'react-router-dom';
+
 import SignUpPage from './components/Signup/SignUpPage';
 import SignInPage from './components/SignIn/SignInPage';
 import MyMessagePage from './components/MyMessage/MyMessagePage';
@@ -13,9 +14,9 @@ import Footer from './components/UIElements/Footer';
 import CateGory from './components/category/CateGory';
 import Detail from './components/contents/Detail';
 import AppContextProvider from './contexts/appContext';
+import Study from './components/study/study.js'
 
 class App extends Component {
-
   render() {
     return (
       <>
@@ -27,16 +28,17 @@ class App extends Component {
               <Route path="/write" component={ContentsController} />
               <Route path="/contents" component={ContentsListView} />
               <Route path="/near" component={NearContentsListView} />
+
               <Route path="/signup" component = {SignUpPage}/>
               <Route path="/signin" component = {SignInPage}/>
               <Route path="/mypage" component = {MyPage}/>
               <Route path="/mymessagepage" component = {MyMessagePage}/>
-              
-               {/*로그인 된 페이지 */}
               <Route path="/category/:id" component={CateGory} />
               <Route path="/category//" component={Error}/>
               <Route path="/detail/:id" component={Detail} />
               <Route path="/detail//" component={Error}/>
+              <Route path="/study/:id" component={Study} />
+              <Route path="/study" component={Study}/>
               <Footer/>
               {/*출력 Test */}
             </div>
