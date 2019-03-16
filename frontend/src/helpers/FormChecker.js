@@ -17,7 +17,7 @@ class FormChecker {
           message : ''
       }
 
-      if (this.validationInfo.length == 0)
+      if (this.validationInfo.length === 0)
           return validResult;
 
       for (var rule of this.validationInfo){

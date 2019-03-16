@@ -1,11 +1,10 @@
-import React, { Component,Fragment } from 'react';
+import React, { Component } from 'react';
 import {Dropdown, MenuItem, Image, Clearfix, Badge} from 'react-bootstrap';
 import './Avatar.css';
 import apiClient from '../../../../helpers/apiClient';
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import {AppContext} from '../../../../contexts/appContext';
-import axios from 'axios';
 
 class Avatar extends Component{
   static contextType = AppContext;
@@ -23,7 +22,7 @@ class Avatar extends Component{
   }
 
   getUnseenMessage(data){
-    if (data.recipient == this.context.state.signInInfo.id){
+    if (data.recipient === this.context.state.signInInfo.id){
       this.setState({
         ...this.state,
         unseenNumber: this.state.unseenNumber + data.addNum
@@ -32,9 +31,9 @@ class Avatar extends Component{
   }
 
   onSelectHandler (eventKey){
-    if (eventKey == 'mypage'){
+    if (eventKey === 'mypage'){
       this.props.history.push('/mypage')
-    }else if (eventKey == 'mymessage'){
+    }else if (eventKey === 'mymessage'){
       this.props.history.push('/mymessagepage');
     }else {
       apiClient.post('/users/signout')

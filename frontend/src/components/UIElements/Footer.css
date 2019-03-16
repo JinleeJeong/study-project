@@ -2,7 +2,7 @@
     clear: both;
     width:100%;
     height:auto;
-    background-color: rgb(4, 5, 39);
+    background-color: #28282A;
     bottom:0px;
   }
   footer{
@@ -10,7 +10,7 @@
     margin-right:470px;
     height:auto;
     width: auto;
-    min-height:300px;
+    min-height:200px;
     max-width: 960px;
     padding: 100px 100px ;
   }

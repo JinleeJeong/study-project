@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import SearchInput, { createFilter } from 'react-search-input';
+import SearchInput from 'react-search-input';
 import { ButtonToolbar, Button } from 'react-bootstrap';
 import movie from '../../images/movie.mp4';
 import { Link } from 'react-router-dom';
 import { AppContext } from '../../contexts/appContext';
 import './Template.css';
-const KEYS_TO_FILTERS = ['title']
 
 class Template extends Component {
   static contextType = AppContext;
@@ -52,13 +51,9 @@ class Template extends Component {
     // });
 
     this.context.actions.getCurrentPosition();
-    
-    // 더하기
-
-    
-    // this.setState({
-    //   contents: await this.context.actions.getContentsR1(),
-    // });
+    this.setState({
+      contents: await this.context.actions.getContentsR1(),
+    });
   };
 
   searchUpdated (term) {
@@ -73,7 +68,6 @@ class Template extends Component {
   
   
   render() {
-    const filter = this.state.contents.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS));
     const { lat, lng } = this.context.state;
 
     return (

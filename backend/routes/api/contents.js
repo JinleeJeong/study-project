@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Contents = require('../../models/Contents.js');
 var multer = require('multer');
-var maxSize = 1024 * 1024;
+var maxSize = 5 * 1024 * 1024;
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
@@ -34,9 +34,9 @@ router.get('/', (req, res, next) => {
 });
 
 /* SAVE Contents formData로 들어온 데이터 저장 + imageUrl스키마 필드에 파일 경로 저장*/
-router.post('/', upload, (req, res, next) => {  
-  Contents.create({...req.body, imageUrl: req.file.path}, (err, post) => {
-    //console.log(req);
+router.post('/', upload, (req, res, next) => {
+  Contents.create({...req.body, categories: req.body.categories.split(","), imageUrl: req.file.path}, (err, post) => {
+    console.log(req.body);
     if (err) return next(err);
     upload(req, res, () => {
       if(req.fileValidationError)

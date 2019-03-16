@@ -12,7 +12,7 @@ class ApiClient {
     methods.forEach((method) => {
       this[method] = (path, data) => new Promise((resolve, reject) => {
         // 수정
-          (method == 'get' ?
+          (method === 'get' ?
           axios[method](formatUrl(path), {withCredentials: true}) :
           axios[method](formatUrl(path), data, {withCredentials: true}))
           .then(res => {

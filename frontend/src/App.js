@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
-import axios from 'axios';
-import './App.css';
+import {BrowserRouter, Route, } from 'react-router-dom';
 
-import test from './images/test.png';
 import SignUpPage from './components/Signup/SignUpPage';
 import SignInPage from './components/SignIn/SignInPage';
 import MyMessagePage from './components/MyMessage/MyMessagePage';
@@ -22,11 +19,6 @@ import Detail from './components/contents/Detail';
 import AppContextProvider from './contexts/appContext';
 
 class App extends Component {
-
-  constructor(props){
-    super(props);
-  }
-
   render() {
     return (
       <>
@@ -45,7 +37,7 @@ class App extends Component {
               <Route path="/mypage" component = {MyPage}/>
               <Route path="/mymessagepage" component = {MyMessagePage}/>
               
-               {/*로그인 된 페이지 */}
+              {/*로그인 된 페이지 */}
               <Route path="/category/:id" component={CateGory} />
               <Route path="/category//" component={Error}/>
               <Route path="/detail/:id" component={Detail} />
