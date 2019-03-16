@@ -12,8 +12,6 @@ const session = require('express-session');
 const passport = require('passport');
 const users = require('./routes/api/users');
 const messages = require('./routes/api/messages');
-
-
 const app = express();
 
 //Connect to Mongo

@@ -9,9 +9,7 @@ class Footer extends Component {
         <Fragment>
             <div className="footer">
           <footer>
-                <div className="footer_introduce">
-                    Study Project_Layout
-                </div>
+                
                 <div>
                 
                 </div>

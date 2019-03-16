@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Contents = require('../../models/Contents.js');
 var multer = require('multer');
-var maxSize = 5 * 1024 * 1024;
+var maxSize = 1024 * 1024;
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
@@ -34,59 +34,86 @@ router.get('/', (req, res, next) => {
 });
 
 /* SAVE Contents formData로 들어온 데이터 저장 + imageUrl스키마 필드에 파일 경로 저장*/
-router.post('/', upload, (req, res, next) => {
-  Contents.create({...req.body, categories: req.body.categories.split(","), imageUrl: req.file.path}, (err, post) => {
-    console.log(req.body);
+router.post('/', upload, (req, res, next) => {  
+  Contents.create({...req.body, imageUrl: req.file.path}, (err, post) => {
+    // console.log(req);
     if (err) return next(err);
     upload(req, res, () => {
-      if(req.fileValidationError)
+      if(req.fileValidationError){
           return res.send(req.fileValidationError);
+      }
       else
           return res.send('/coverimg/' + req.file.filename);
     });
   });
 });
-///////////
-router.post('/participants',(req, res, next) => {  
-  Contents.create({...req.body}, (err, post) => {
-    //console.log(req);
-    if (err) return next(err);
-  });
-});
-/////
-router.get('/r1', (req, res, next) => { 
+
+router.get('/representation1', (req, res, next) => { 
   Contents.find((err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  }).sort({title : 1});
+  }).sort({views : -1})   
+    .where('category').in(['면접'])
+    .limit(4);
 });
 
-router.get('/r2', (req, res, next) => {
+router.get('/representation2', (req, res, next) => {
   Contents.find((err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  }).sort({createdAt : -1});
+  })
+  .sort({views : -1})
+  .where('category').in(['영어 회화'])
+  .limit(4);
+});
+
+router.get('/new', (req, res, next) => {
+  Contents.find((err, contents) => {
+    if (err) return next(err);
+    //console.log(res);
+    res.json(contents);
+  })
+  .sort({id : -1})
+  .limit(4);
+});
+
+router.get('/attention1', (req, res, next) => {
+  Contents.find((err, contents) => {
+    if (err) return next(err);
+    //console.log(res);
+    res.json(contents);
+  })
+  // .sort({createdAt : 1})
+  .limit(4);
+});
+
+router.get('/attention2', (req, res, next) => {
+  Contents.find((err, contents) => {
+    if (err) return next(err);
+    //console.log(res);
+    res.json(contents);
+  })
+  // .sort({views : -1})
+  // .where('category').in(['면접'])
+  .limit(4);
 });
 
 router.get('/context/:id', (req, res, next) => { 
-  Contents.find((err, contents) => {
+  Contents.findOne((err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  });
+  }); 
 });
 
 router.get('/detail/:id', (req,res,next) => {
-  Contents.find((err, contents) => {
+  Contents.findOneAndUpdate({ id: req.params.id },{ $inc: { views: 1 } }, (err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
   })});
-
-  router.get('/users/:id', function (req, res) {
-    res.send('user id: ' + req.params.id); 
-  });
+  
 
 module.exports = router;
