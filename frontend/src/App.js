@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Route, } from 'react-router-dom';
-
 import SignUpPage from './components/Signup/SignUpPage';
 import SignInPage from './components/SignIn/SignInPage';
 import MyMessagePage from './components/MyMessage/MyMessagePage';
@@ -14,15 +13,17 @@ import Footer from './components/UIElements/Footer';
 import CateGory from './components/category/CateGory';
 import Detail from './components/contents/Detail';
 import AppContextProvider from './contexts/appContext';
-import Study from './components/study/study.js'
-
+import CustomSnackbar from './components/UIElements/CustomSnackbar';
+import Study from './components/study/study';
 class App extends Component {
+
   render() {
     return (
       <>
         <AppContextProvider>
           <BrowserRouter>
             <div className="App">
+              <CustomSnackbar/>
               <TopAppBar />
               <Route exact path="/" component={Template} />
               <Route path="/write" component={ContentsController} />

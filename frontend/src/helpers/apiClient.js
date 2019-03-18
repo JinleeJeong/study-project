@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const apiUrl = 'http://localhost:8080/api';
+//const apiUrl = 'http://localhost:8080/api';
+const apiUrl = '/api';
 const methods = ['get', 'post'];
 
 function formatUrl(path) {
