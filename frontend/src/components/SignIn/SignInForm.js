@@ -124,6 +124,7 @@ setValidationResult (validationResult){
       })
       .then(res => {
         console.log(res.message)
+        console.log(res.url);
         this.props.history.push(res.url)
       })
       .catch(err=> console.log(err));
