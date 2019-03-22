@@ -1,22 +1,33 @@
-import React, { Component, Fragment } from 'react';
-import './Footer.css';
-// import { ButtonToolbar, Button, Row, Col, Image } from 'react-bootstrap';
-class Footer extends Component {
+import React from 'react';
+import { withStyles, Typography ,} from '@material-ui/core';
 
-  
-    render() {
-      return (
-        <Fragment>
-            <div className="footer">
-          <footer>
-                
-                <div>
-                
-                </div>
-          </footer>
-            </div>
-        </Fragment>
-      );
-    }
+const styles = theme => ({
+  root: {
+    width: '100%',
+    height: 180,
+		background: '#90CAF9',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+  },
+	text: {
+		color: 'white',
+		fontWeight: 600,
+	},
+	button: {
+
+	},
+});
+
+const Footer = (props) => {
+	const { classes } = props;
+	return (
+		<div className={classes.root}>
+			<div className={classes.container}>
+				<Typography className={classes.text} variant="h5">Study Hub Web Dev Project.</Typography>
+			</div>
+		</div>
+	);
 }
-export default Footer;
+
+export default withStyles(styles)(Footer);

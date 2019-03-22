@@ -14,9 +14,8 @@ import CateGory from './components/category/CateGory';
 import Detail from './components/contents/Detail';
 import AppContextProvider from './contexts/appContext';
 import CustomSnackbar from './components/UIElements/CustomSnackbar';
-import Study from './components/study/study';
-class App extends Component {
 
+class App extends Component {
   render() {
     return (
       <>
@@ -38,8 +37,6 @@ class App extends Component {
               <Route path="/category//" component={Error}/>
               <Route path="/detail/:id" component={Detail} />
               <Route path="/detail//" component={Error}/>
-              <Route path="/study/:id" component={Study} />
-              <Route path="/study" component={Study}/>
               <Footer/>
               {/*출력 Test */}
             </div>

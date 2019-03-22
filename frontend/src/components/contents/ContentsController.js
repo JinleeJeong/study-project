@@ -86,6 +86,7 @@ class ContentsController extends Component {
     description: '',
     addresses: [],
     selectedLocation: '',
+    latlng: '',
   }
 
   categoryHandler = (e) => {
@@ -109,25 +110,30 @@ class ContentsController extends Component {
   //확인 버튼 클릭시 formData 초기화 후 context addContents에 formData 전달하여 호출
   addContents = async (e) => {
     e.preventDefault();
-    const { title, selectedCategories: categories, description, selectedLocation: userLocation } = this.state;
+    const { title, selectedCategories: categories, description, selectedLocation: userLocation, latlng } = this.state;
+    const leader = this.context.state.signInInfo.email;
     const coverImg = document.getElementById('coverImg').files[0];
 
-    const dataInObject = {
-      title,
-      categories,
-      description,
-      userLocation,
-      coverImg,
-    };
-
-    const formData = new FormData();
-    Object.keys(dataInObject).map((key) => {
-      return formData.append(key, dataInObject[key]);
-    });
-    
-    await this.context.actions.addContents(formData);
-    this.props.history.push("/");
-  }
+    if(title !== '' && categories !== '' && description !== '' && userLocation !== '') {
+      const dataInObject = {
+        title,
+        categories,
+        description,
+        userLocation,
+        coverImg,
+        leader,
+        latlng,
+      };
+  
+      const formData = new FormData();
+      Object.keys(dataInObject).map((key) => {
+        return formData.append(key, dataInObject[key]);
+      });
+      
+      await this.context.actions.addContents(formData);
+      this.props.history.push("/");
+    } 
+  };
 
   async componentDidMount() {
     const currentPosition = queryString.parse(this.props.location.search);
@@ -146,9 +152,11 @@ class ContentsController extends Component {
       map: map,
     });
     naver.maps.Event.addListener(map, 'click', async (e) => {
+      console.log(e.latlng);
       marker.setPosition(e.latlng);
       this.setState({
         addresses: await this.getAddresses(e.latlng),
+        latlng: e.latlng,
       });
     });
   };
