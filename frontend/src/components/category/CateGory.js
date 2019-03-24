@@ -36,7 +36,6 @@ class CateGory extends Component {
 
   async componentDidMount() {
     const { searchTerm } = this.state;
-
     this.setState({
       boards: await this.context.actions.getContentsByCategory(searchTerm)
     });

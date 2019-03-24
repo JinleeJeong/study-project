@@ -1,10 +1,9 @@
-
 const express = require('express');
 const router = express.Router();
 const Contents = require('../../models/Contents.js');
 const multer = require('multer');
 const maxSize = 5 * 1024 * 1024;
-const basicImgPath = 'coverImg\\study-basic.jpg';
+const basicImgPath = 'coverimg\\study-basic.jpg';
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
@@ -39,16 +38,15 @@ router.get('/', (req, res, next) => {
 /* SAVE Contents formData로 들어온 데이터 저장 + imageUrl스키마 필드에 파일 경로 저장*/
 router.post('/', upload, (req, res, next) => {
   const imageUrl = req.file ? req.file.path : basicImgPath;
-  Contents.create({ ...req.body, categories: req.body.categories.split(","), imageUrl: imageUrl }, (err, post) => {
+  Contents.create({ ...req.body, categories: req.body.categories.split(","), imageUrl: imageUrl }, (err, contents) => {
     if (err) return next(err);
-    req.file ?
-    upload(req, res, () => {
-      if(req.fileValidationError) {
-          return res.send(req.fileValidationError);
-      }
-      else
-          return res.send('/coverimg/' + req.file.filename);
-    }) : res.send('/coverimg/study-basic.jpg');
+    else if(req.file) {
+      upload(req, res, () => {
+        if(req.fileValidationError) return res.send(req.fileValidationError);
+        else return res.send('/coverimg/' + req.file.filename);
+      });
+    }
+    else res.json(contents);
   });
 });
 
@@ -117,7 +115,18 @@ router.get('/detail/:id', (req,res,next) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  })});
+  })
+});
+
+//
+router.post('/join/:id', (req, res, next) => {
+  console.log(req);
+  Contents.findOneAndUpdate({ id: req.params.id }, { $push: { participants: req.user.email } }, (err, contents) => {
+    if (err) return next(err);
+    //console.log(res);
+    res.json(contents);
+  })
+});
   
 
 module.exports = router;
