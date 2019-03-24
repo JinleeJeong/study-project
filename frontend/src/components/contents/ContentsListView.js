@@ -9,7 +9,7 @@ class ContentsListView extends Component {
   }
 
   getContents = async () => {
-    const contents = await this.context.actions.getContentsR1();
+    const contents = await this.context.actions.getContentsRepresentation1();
     this.setState({
       contents: contents,
     })

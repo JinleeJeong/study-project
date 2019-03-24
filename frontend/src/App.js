@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Route, } from 'react-router-dom';
-
 import SignUpPage from './components/Signup/SignUpPage';
 import SignInPage from './components/SignIn/SignInPage';
 import MyMessagePage from './components/MyMessage/MyMessagePage';
@@ -16,6 +15,7 @@ import Detail from './components/contents/Detail';
 import AppContextProvider from './contexts/appContext';
 import Login from './components/UIElements/Login';
 import AllContent from './components/UIElements/AllContent';
+import CustomSnackbar from './components/UIElements/CustomSnackbar';
 class App extends Component {
   render() {
     
@@ -30,6 +30,7 @@ class App extends Component {
             }
             <Route exact path="/" component={Login} />
               {/* <TopAppBar /> */}
+              <CustomSnackbar/>
               <Route path="/templates" component={Template} />
               <Route path="/write" component={ContentsController} />
               <Route path="/contents" component={ContentsListView} />

@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import logo from '../../../images/logo.png';
+import { withStyles, AppBar, Toolbar, Button, } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar/Avatar';
 import { AppContext } from '../../../contexts/appContext';
@@ -13,12 +9,24 @@ const styles = {
     flexGrow: 1,
     marginBottom: 1,
   },
+  appBar: {
+    backgroundColor: '#263238',
+  },
   grow: {
     flexGrow: 1,
   },
-  button: {
-    fontSize: 17,
+  link: {
+    color: '#90CAF9',
+    fontSize: 20,
+    fontWeight: 500,
   },
+  button: {
+    fontSize: 18,
+    fontWeight: 500,
+  },
+  toolbar:{
+    maxHeight:'64px'
+  }
 };
 
 class TopAppBar extends Component {
@@ -29,18 +37,15 @@ class TopAppBar extends Component {
     
     return (
       <div className={classes.root}>
-        <AppBar position="static">
+        <AppBar className={classes.appBar} position="static">
           <Toolbar>
             <div className={classes.grow}>
-              <Link to="/templates" >
-                <img src={logo} color="inherit" alt="logo" height="40" width="150" />
+              <Link className={classes.link} to="/"style={{color: '#90CAF9'}}>
+                STUDYHUB
               </Link>
             </div>
-            <Button className={classes.button} component={Link} to="/AllContent" color="inherit">현재 스터디 목록</Button>
-            <Button className={classes.button} component={Link} to="/signup" color="inherit">회원가입</Button>
-            {this.context.state.signInInfo.status === null ? <Button style={{width:'100px'}}> </Button> : this.context.state.signInInfo.status === false ?
-                (<Button className={classes.button} component={Link} to="/signin" color="inherit"> 로그인 </Button>)
-                : (<Button> <Avatar/> </Button>)}
+            <Button className={classes.button} component={Link} to="/contents" style={{color: '#FFFFFF'}}>스터디 찾기</Button>
+            {this.context.state.signInInfo.status === false ? <div><Button className={classes.button} component={Link} to="/signup" style={{color: '#90CAF9'}}>회원가입</Button><Button className={classes.button} component={Link} to="/signin" style={{color: '#FFFFFF'}}> 로그인 </Button></div> : <Avatar/>}
           </Toolbar>
         </AppBar>
       </div>
