@@ -13,18 +13,12 @@ class Detail extends Component {
       boards: [],
       detailTerm: props.match.params.id,
     }
-    // this.searchUpdated = this.searchUpdated.bind(this)
+
   }
 
   async componentDidMount() {
-    // 진리님 코드
-    // axios.get('http://localhost:8080/api/contents/detail/'+this.state.detailTerm)
-    //   .then(res => {
-    //     this.setState({
-    //   boards : res.data,
-    //   });
-    //     console.log(this.state.contents);
-    //   });
+    this.context.actions.checkAuth();
+    
     const { detailTerm } = this.state;
     this.setState({
       boards: await this.context.actions.getContentsDetail(detailTerm),

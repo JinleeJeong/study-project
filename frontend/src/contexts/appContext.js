@@ -32,6 +32,9 @@ export default class AppContextProvider extends Component {
     //
     addParticipants: formData => apiClient.post('/participants', formData),
     //
+    getUserInfomations : () => apiClient.get('/users'),
+    //
+    getContentsAll : () => apiClient.get('/contents/'),
     getContentsRepresentation1: () => apiClient.get('/contents/representation1'),
     getContentsRepresentation2: () => apiClient.get('/contents/representation2'),
     getContentsNew: () => apiClient.get('/contents/new'),

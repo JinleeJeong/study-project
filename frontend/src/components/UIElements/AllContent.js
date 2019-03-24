@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import './CateGory.css';
+
 import { AppContext } from '../../contexts/appContext';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -21,7 +21,7 @@ const styles = theme => ({
   },
 });
 
-class CateGory extends Component {
+class AllContent extends Component {
   static contextType = AppContext;
 
   constructor(props) {
@@ -29,16 +29,14 @@ class CateGory extends Component {
     this.state = {
       users: [],
       boards: [],
-      searchTerm: props.match.params.id,
     }
  
   }
 
   async componentDidMount() {
-    const { searchTerm } = this.state;
 
     this.setState({
-      boards: await this.context.actions.getContentsByCategory(searchTerm)
+      boards: await this.context.actions.getContentsAll()
     });
   };
   
@@ -46,7 +44,7 @@ class CateGory extends Component {
       const { classes } = this.props;
       return (
       <Fragment>
-        <div style={{textAlign: "right", margin : "7vh 10vh 3vh 0 "}}>{this.state.searchTerm} 카테고리</div>
+        <div style={{textAlign: "right", margin : "7vh 10vh 3vh 0 "}}>Currently Study</div>
         <div style={{marginLeft : "10vh", marginRight : "10vh", minHeight:"74vh"}}>
         <Grid container spacing={40} style={{}}>
             {this.state.boards.map((board, index) => (
@@ -70,5 +68,5 @@ class CateGory extends Component {
         </Fragment>
       )}
 }
-export default withStyles(styles)(CateGory);
+export default withStyles(styles)(AllContent);
   

@@ -5,7 +5,7 @@ import apiClient from '../../../../helpers/apiClient';
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import {AppContext} from '../../../../contexts/appContext';
-
+import { Link } from 'react-router-dom';
 class Avatar extends Component{
   static contextType = AppContext;
 
@@ -76,7 +76,7 @@ class Avatar extends Component{
           <Image className = "userProfile" src = "http://image.newsis.com/2018/05/28/NISI20180528_0014122801_web.jpg"/>
         </CustomToggle>
         <Clearfix bsRole = "menu">
-          <MenuItem eventKey = "mypage" onSelect = {this.onSelectHandler}>마이페이지</MenuItem>
+          <MenuItem eventKey = "mypage" onSelect = {this.onSelectHandler}><Link to={`/mypage`}>마이페이지</Link></MenuItem>
           <MenuItem eventKey = "mymessage" onSelect = {this.onSelectHandler}> <span> 쪽지함 </span> <Badge style = {{color: 'white', background: '#ff4767'}}>{this.state.unseenNumber}</Badge></MenuItem>
           <MenuItem eventKey = "signout" onSelect = {this.onSelectHandler}>로그아웃</MenuItem>
         </Clearfix>

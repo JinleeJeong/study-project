@@ -14,21 +14,26 @@ import Footer from './components/UIElements/Footer';
 import CateGory from './components/category/CateGory';
 import Detail from './components/contents/Detail';
 import AppContextProvider from './contexts/appContext';
-import Study from './components/study/study.js'
-
+import Login from './components/UIElements/Login';
+import AllContent from './components/UIElements/AllContent';
 class App extends Component {
   render() {
+    
     return (
       <>
         <AppContextProvider>
           <BrowserRouter>
             <div className="App">
-              <TopAppBar />
-              <Route exact path="/" component={Template} />
+            <div className="app-wrapper">
+            {
+              window.location.pathname!=='/' ? <TopAppBar/>:''
+            }
+            <Route exact path="/" component={Login} />
+              {/* <TopAppBar /> */}
+              <Route path="/templates" component={Template} />
               <Route path="/write" component={ContentsController} />
               <Route path="/contents" component={ContentsListView} />
               <Route path="/near" component={NearContentsListView} />
-
               <Route path="/signup" component = {SignUpPage}/>
               <Route path="/signin" component = {SignInPage}/>
               <Route path="/mypage" component = {MyPage}/>
@@ -37,10 +42,12 @@ class App extends Component {
               <Route path="/category//" component={Error}/>
               <Route path="/detail/:id" component={Detail} />
               <Route path="/detail//" component={Error}/>
-              <Route path="/study/:id" component={Study} />
-              <Route path="/study" component={Study}/>
-              <Footer/>
-              {/*출력 Test */}
+              <Route path="/AllContent/" component = {AllContent}/>
+              {
+              window.location.pathname!=='/' ? <Footer/>:''
+              }
+              {/* <Footer/> */}
+              </div>
             </div>
           </BrowserRouter>
         </AppContextProvider>
