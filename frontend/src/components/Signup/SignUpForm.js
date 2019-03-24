@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import { green,red } from '@material-ui/core/colors';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import { AppContext } from '../../contexts/appContext';
 
 
 const style = theme => ({
@@ -20,7 +21,7 @@ const style = theme => ({
   },
 
   input:{
-    width: 100
+    width: '100%'
   },
 
   TextField: {
@@ -54,11 +55,15 @@ const style = theme => ({
     '&:hover': {
       backgroundColor: green[800],
     },
+  },
+  removeLinkDec: {
+    textDecoration : 'none !important' 
   }
 });
 
 class SignUpForm extends Component {
-  
+  static contextType = AppContext;
+
   constructor(props){
     super(props);
     // formFieldInput : 해당 객체의 property에 사용자가 각 칸에 입력한 값들을 저장한다.
@@ -100,16 +105,15 @@ registrationApiCall (){
     name: this.state.formFieldInput.userName,
   })
   .then(res => {
-    if (res.message === "회원가입에 성공했습니다."){
-      console.log("성공");
-      this.props.history.push('/signin');
-    }
-    else if(res.message === "중복된 아이디입니다.")
+    this.context.actions.snackbarOpenHandler(res.message,res.state);
+    
+    if(res.message === "중복된 아이디입니다.")
       this.setValidationResult({
         fieldName: 'email',
         isCorrect: 'error',
         message: "이미 존재하는 아이디입니다."
       });
+    this.props.history.push(res.url);
   })
   .catch(err=> console.log(err));
 }
@@ -240,7 +244,6 @@ onSubmit(e){
       userNameValid === null && 
       passwordValid === null &&
       passwordConfirmationValid === null) {
-        console.log("hi")
         this.registrationApiCall();
   }
   else
@@ -252,13 +255,13 @@ render (){
 
   return (
     <Card
-      alignItems ="center"
+      style ={{alignItems : "center"}}
     >
       <CardHeader style={{ textAlign: 'center' }} component="h5" title ="회원가입"/>
       <form onSubmit = {this.onSubmit} className={classes.container}>
         <TextField
           id= "nameInp"
-          label= "이름"
+          label= "닉네임"
           className= {classes.textField}
           value= {this.state.formFieldInput.userName}
           error= {this.state.formFieldValid.userNameValid !== null ? true : null}
@@ -278,6 +281,7 @@ render (){
           helperText = {this.state.formFieldMessage.emailValError}
           onChange= {this.onChange('email')}
           onBlur = {this.onBlur('email')}
+          InputProps={{classes: {input: classes.input}}}
           margin="normal"
         >
         </TextField>
@@ -317,8 +321,8 @@ render (){
           >
             가입
           </Button>
-          <a className = {`removeLinkDec ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/google_auth"><Button variant="contained" className={`${classes.GoogleCol} ${classes.Button}`}>구글 계정으로 시작하기</Button></a>
-          <a className = {`removeLinkDec ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/naver_auth"><Button variant="contained" className={`${classes.NaverCol} ${classes.Button}`}>네이버 계정으로 시작하기</Button></a>
+          <a className = {`${classes.removeLinkDec} ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/google_auth"><Button variant="contained" className={`${classes.GoogleCol} ${classes.Button}`}>구글 계정으로 시작하기</Button></a>
+          <a className = {`${classes.removeLinkDec} ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/naver_auth"><Button variant="contained" className={`${classes.NaverCol} ${classes.Button}`}>네이버 계정으로 시작하기</Button></a>
       </form>
 
     </Card>

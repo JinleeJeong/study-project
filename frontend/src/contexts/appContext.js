@@ -17,7 +17,8 @@ export default class AppContextProvider extends Component {
     signInInfo: {
       status : false,
       id: '',
-      email : ''
+      email : '',
+      image:''
     },
 
     unseenMessage : 0,
@@ -67,7 +68,7 @@ export default class AppContextProvider extends Component {
 
     checkAuth: async () => {
       return apiClient.post('/users/checkAuth')
-        .then(res => ({status: res.status, id: res.id, email: res.email}))
+        .then(res => ({status: res.status, id: res.id, email: res.email, image: res.image}))
         .then(user => {
           console.log(user);
           let io = this.state.socketConnection.io;
@@ -79,7 +80,9 @@ export default class AppContextProvider extends Component {
               signInInfo: {
                 status: user.status,
                 id : user.id,
-                email: user.email}
+                email: user.email,
+                image: user.image
+              }
             })
           }
           else{
@@ -91,7 +94,9 @@ export default class AppContextProvider extends Component {
               signInInfo: {
                 status: user.status,
                 id : user.id,
-                email: user.email}
+                email: user.email,
+                image : user.image
+              }
             })
           }
         })

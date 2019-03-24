@@ -19,6 +19,14 @@ const styles = theme => ({
   padding: {
     padding: `0 ${theme.spacing.unit * 2}px`,
   },
+
+  divHeight: {
+    height: '64px',
+  },
+  button : {
+    padding: '4px',
+    height: '100%'
+  }
 });
 
 class AvatarandDropdown extends React.Component {
@@ -38,6 +46,7 @@ class AvatarandDropdown extends React.Component {
   }
 
   handleClick = event => {
+    console.log(event.currentTarget)
     this.setState({ anchorEl: event.currentTarget });
   };
 
@@ -53,24 +62,24 @@ class AvatarandDropdown extends React.Component {
       this.props.history.push('/mymessagepage');
     }else if (option === 'signout') {
       apiClient.post('/users/signout')
-      .then (()=> {console.log("logout");window.location.reload()})
-    }
+      .then (()=> {
+        console.log("logout");
+        window.location = '/';
+    });
   }
+}
   getUnseenMessage(data){
     if (data.recipient === this.context.state.signInInfo.id)
       this.context.actions.getUnseenMessage();
   }
 
   componentDidMount(){
-    console.log("avatar mounted..");
     // 현재 로그인 유저가 읽지 않은 쪽지 개수를 요청한다. 
-
     this.context.actions.getUnseenMessage()
     this.context.state.socketConnection.io.on('unseenMessage',(data) => this.getUnseenMessage(data));
   }
 
   componentWillUnmount(){
-    console.log("avatar unmount..");
     this.context.state.socketConnection.io.removeListener('unseenMessage',this.getUnseenMessage);
   }
 
@@ -79,13 +88,14 @@ class AvatarandDropdown extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div>
+      <div className = {classes.divHeight}>
         <Button
+          className = {classes.button}
           aria-owns={anchorEl ? 'simple-menu' : undefined}
           aria-haspopup="true"
           onClick={this.handleClick}
         >
-          <Avatar className = {classes.avatar} alt="Remy Sharp" src="http://dimg.donga.com/egc/CDB/KOREAN/Article/14/91/17/17/1491171704037.jpg"/>
+          <Avatar className = {classes.avatar} alt="Remy Sharp" src= {`http://localhost:8080/${this.context.state.signInInfo.image}`}/>
         </Button>
         <Menu
           id="simple-menu"
@@ -113,5 +123,4 @@ class AvatarandDropdown extends React.Component {
 Avatar.propType = {
   history: PropTypes.object.isRequired,
 }
-
 export default Object.assign(withRouter(withStyles(styles)(AvatarandDropdown)),{contextType: undefined});

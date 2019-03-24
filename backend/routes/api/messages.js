@@ -7,7 +7,7 @@ const User = require('../../models/Users');
 router.post('/', (req,res,next) => {
   if (req.user){
     const {total, showNum, page} = req.body;
-    if (total == null){
+    if (total === null){
       Messages.find({recipient : ObjectId(req.user.id)}).sort({$natural : -1})
         .populate('sender', 'email name image')
         .exec((err,data) =>{
@@ -96,6 +96,16 @@ router.post('/send',(req,res,next)=> {
       }
       
     })
-    
-})
+});
+
+router.post('/seenCheck',(req,res,next)=>{
+  const {messageId} = req.body;
+  Messages.update({_id: messageId}, {seen: true})
+    .exec((err) =>{
+      if(err)
+        next(err);
+      res.send("success");
+    });
+});
+
 module.exports = router;

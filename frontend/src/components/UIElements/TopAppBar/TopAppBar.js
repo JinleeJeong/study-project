@@ -19,6 +19,9 @@ const styles = {
   button: {
     fontSize: 17,
   },
+  toolbar:{
+    maxHeight:'64px'
+  }
 };
 
 class TopAppBar extends Component {
@@ -30,7 +33,7 @@ class TopAppBar extends Component {
     return (
       <div className={classes.root}>
         <AppBar position="static">
-          <Toolbar>
+          <Toolbar className = {classes.toolbar}>
             <div className={classes.grow}>
               <Link to="/" >
                 <img src={logo} color="inherit" alt="logo" height="40" width="150" />
@@ -38,9 +41,9 @@ class TopAppBar extends Component {
             </div>
             <Button className={classes.button} component={Link} to="/contents" color="inherit">현재 스터디 목록</Button>
             <Button className={classes.button} component={Link} to="/signup" color="inherit">회원가입</Button>
-            {this.context.state.signInInfo.status === null ? <Button style={{width:'100px'}}> </Button> : this.context.state.signInInfo.status === false ?
+            {this.context.state.signInInfo.status === false ?
                 (<Button className={classes.button} component={Link} to="/signin" color="inherit"> 로그인 </Button>)
-                : (<Button> <Avatar/> </Button>)}
+                : (<Avatar/>)}
           </Toolbar>
         </AppBar>
       </div>

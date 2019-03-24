@@ -12,6 +12,9 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import SendMessageDialog from './SendMessageDialog';
 import Snackbar from '@material-ui/core/Snackbar';
+import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
+import SendIcon from '@material-ui/icons/Send';
 
 const styles = theme => ({
   marginAuto:{
@@ -59,7 +62,13 @@ const styles = theme => ({
 
   leftOptions: {
     marginLeft: '20px',
-  }
+  },
+
+  absolute: {
+    position: 'fixed',
+    bottom: theme.spacing.unit * 10,
+    right: theme.spacing.unit * 8,
+  },
 });
 
 class MyMessagePage extends Component {
@@ -72,7 +81,7 @@ class MyMessagePage extends Component {
       this.state = {
         messageSendDialogOpen: false,
         //initial value
-        sendMessageTo: null,
+        sendMessageTo: '',
         
         // 메세지 list와 pager를 위한 정보 
         messages: [],
@@ -82,7 +91,10 @@ class MyMessagePage extends Component {
           showNum : showNum,
           page: 1
         },
-        selectedElements : {}
+        selectedElements : {},
+        
+        loading: true
+        
       }
       // Dialog innerRef
       this.sendMessageDialog = null;
@@ -94,6 +106,7 @@ class MyMessagePage extends Component {
       this.getArrivalMessage = this.getArrivalMessage.bind(this);
       this.messagePagerHandler = this.messagePagerHandler.bind(this);
       this.removeMessages = this.removeMessages.bind(this);
+      this.changeSeen = this.changeSeen.bind(this);
     }
 
     // message를 server로 부터 가져오기 위한 function
@@ -148,10 +161,30 @@ class MyMessagePage extends Component {
 
     }
 
+    changeSeen(expanded, listIdx, seen){
+      if (expanded && !seen){
+        setTimeout(() => {
+          apiClient.post('/messages/seenCheck',{messageId : this.state.messages[listIdx]._id})
+          .then(() => {
+            let changedList = this.state.messages;
+            changedList[listIdx].seen = true;
+            this.setState({
+              ...this.state,
+              messages : changedList,
+            });
+            this.context.actions.getUnseenMessage();
+          });
+        }, 400);
+      }
+    }
+
     renderingList = ()=>{
-      const messages = this.state.messages.map((message)=>{
-        return <Inbox key = {message._id}
+      const messages = this.state.messages.map((message,index)=>{
+        return <Inbox 
+          key = {message._id}
+          listIdx = {index}
           onChangeHandler = {this.getSelectedMessages}
+          changeSeenHandler = {this.changeSeen}
           handleOpen = {this.handleOpen}
           handleClose = {this.handleClose}
           messageKey = {message._id}
@@ -176,9 +209,10 @@ class MyMessagePage extends Component {
             return;
           // 핸들러 등록 
           this.context.state.socketConnection.io.on('test',(data) => this.getArrivalMessage(data));
-          this.getMessagesApi(this.state.messagePagerInfo);
+          this.getMessagesApi(this.state.messagePagerInfo)      
+            .then(()=>{this.setState({...this.state,loading: false})});
         });
-    }
+      }
 
     componentWillUnmount(){
       console.log("unmount");
@@ -214,11 +248,10 @@ class MyMessagePage extends Component {
         this.setState({ ...this.state, messageSendDialogOpen: true});
       else
         this.setState({ ...this.state, sendMessageTo: to, messageSendDialogOpen: true },this.sendMessageDialog.setToInitialState(to));
-
     };
 
     handleClose(){
-      this.setState({ ...this.state, sendMessageTo: null, messageSendDialogOpen: false }, 
+      this.setState({ ...this.state, sendMessageTo: '', messageSendDialogOpen: false }, 
         ()=> this.sendMessageDialog.setToInitialState());
     };
 
@@ -233,6 +266,7 @@ class MyMessagePage extends Component {
       // };
 
       return (
+        this.state.loading === true? <div className= {classes.page}/> : 
         <Fragment>
         <div className = {classes.page}>
           <div className = {classes.aboveList}>
@@ -245,7 +279,7 @@ class MyMessagePage extends Component {
               <Grid container>
                 <Grid className = {classes.marginAuto} item xs={6}>
                   <Typography>
-                    {`${(page -1)*showNum+1} - ${(page-1)*showNum+currentNum} of ${total}`}
+                    {total === 0 ? "메시지 없음" : `${(page -1)*showNum+1} - ${(page-1)*showNum+currentNum} 중 ${total}`}
                   </Typography>
                 </Grid>
                 <Grid item xs={3}>
@@ -265,6 +299,12 @@ class MyMessagePage extends Component {
           <List>
             {this.renderingList()}
           </List>
+
+          <Tooltip title="쪽지 전송" aria-label="send">
+            <Fab onClick = {()=>{this.handleOpen()}} color="primary" className={classes.absolute}>
+              <SendIcon/>
+            </Fab>
+          </Tooltip>
         </div>
 
         <SendMessageDialog

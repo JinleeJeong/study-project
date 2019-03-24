@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-//const apiUrl = 'http://localhost:8080/api';
-const apiUrl = '/api';
+const apiUrl = 'http://localhost:8080/api';
+//const apiUrl = '/api';
 const methods = ['get', 'post'];
 
 function formatUrl(path) {
@@ -11,11 +11,10 @@ function formatUrl(path) {
 class ApiClient {
   constructor() {
     methods.forEach((method) => {
-      this[method] = (path, data) => new Promise((resolve, reject) => {
-        // 수정
+      this[method] = (path, data, config) => new Promise((resolve, reject) => {
           (method === 'get' ?
-          axios[method](formatUrl(path), {withCredentials: true}) :
-          axios[method](formatUrl(path), data, {withCredentials: true}))
+          axios[method](formatUrl(path), {withCredentials: true, ...config}) :
+          axios[method](formatUrl(path), data, {withCredentials: true, ...config}))
           .then(res => {
             resolve(res.data);
           })

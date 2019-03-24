@@ -22,6 +22,8 @@ function socialLoginRedirect(service, req, res, next) {
           next(err);
       })
     }
+
+    delete req.session.redirectTo;
     
     res.redirect(`${redirectURL}/?message = ${message}&state = ${state}`);
   })(req, res, next)
@@ -29,8 +31,7 @@ function socialLoginRedirect(service, req, res, next) {
 
 // test용 router
 router.get('/', (req,res) => {
-  User.find()
-    .then(users=> res.json(users))
+  res.send(req.header);
 });
 
 // 회원가입 router
@@ -39,6 +40,11 @@ router.post('/register', (req, res, next) => {
   let email =  req.body.email;
   let password = User.hashPassword(req.body.password);
   let name = req.body.name;  
+  
+  // origin url
+  let redirectURL = req.headers.referer;
+  // history.push() => basename이 붙기 때문에 pathname을 추출한다. 
+  redirectURL = new URL(redirectURL).pathname;
 
   newUser = new User ({
     email: email,
@@ -46,7 +52,7 @@ router.post('/register', (req, res, next) => {
     name: name,
     address: null ,
     interests: null ,
-    image: null ,
+    image: 'coverimg/defaultAvartar.png',
     sex: null ,
     birth: null ,
     about: null ,
@@ -68,7 +74,7 @@ router.post('/register', (req, res, next) => {
             });
             // 토큰 document 저장
             newToken.save()
-              .then(() => res.send({state: 'success', message:'회원가입에 성공했습니다.', url: 'http://localhost:3000'}))
+              .then(() => res.send({state: 'success', message:'회원가입에 성공했습니다.', url: ''}))
               .catch(err => next(err));
         })
         .catch(err => next(err));   
@@ -107,7 +113,7 @@ router.post('/register', (req, res, next) => {
       }
       // 이미 가입한 경우
       else{
-        res.send({state: 'fail', message:'이미 가입한 아이디입니다.', url: 'http://localhost:3000'});
+        res.send({state: 'warning', message:'이미 가입한 아이디입니다.', url: redirectURL});
       }
     })
     .catch(err => next(err))
@@ -137,6 +143,11 @@ router.get('/verify',(req, res , next)=>{
 
 // 로그인 router
 router.post('/signin',(req, res, next) => {
+  // origin url
+  let redirectURL = req.headers.referer;
+  // history.push() => basename이 붙기 때문에 pathname을 추출한다. 
+  redirectURL = new URL(redirectURL).pathname;
+
   passport.authenticate('local', async (err,user,info)=>{
     if (err) return next(err)
     
@@ -146,8 +157,8 @@ router.post('/signin',(req, res, next) => {
           next(err);
       })
     }
-    
-    res.send(info)
+    info.url = info.url === null ? redirectURL : info.url;
+    res.send(info);
   })(req, res, next)
 // If this function gets called, authentication was successful.
 })
@@ -155,7 +166,7 @@ router.post('/signin',(req, res, next) => {
 // test 용 router
 router.get('/session',(req, res, next)=>{
   console.log(req.session.passport.user);
-  res.send(req.session)
+  res.send(req.header)
 });
 
 //If user is logged in, passport.js will create user object in req for every request in express.js,
@@ -165,14 +176,16 @@ router.post('/checkAuth',(req, res, next )=>{
     res.json({
       status : true,
       id : req.user._id,
-      email : req.user.email
+      email : req.user.email,
+      image: req.user.image
     });
   }
   else{
     res.json({
       status : false,
       id: '',
-      email : ''
+      email : '',
+      image: ''
     });
   }
 });
@@ -183,7 +196,28 @@ router.post('/signout',(req, res, next)=>{
     status:false,
     email:''
   });
-})
+});
+
+router.post('/delete', async (req, res, next)=>{
+  console.log("delte");
+
+  const app = await User.findOne({ _id: req.user._id}).exec();
+  await app.remove(); //prints 'pre remove'
+
+  /*User.findById(req.user._id)
+    .exec((err,doc)=>{
+      if(err)
+        next(err);
+        console.log(doc);
+        doc.remove({_id: req.user._id})
+          .exec( (err)=>{
+            if (err)
+              next();
+              console.log(req.headers.origin);
+              res.redirect(req.headers.origin);
+          });
+    });*/
+});
 
 router.get('/google_auth',(req, res, next)=>{
   req.session.redirectTo = req.headers.referer;

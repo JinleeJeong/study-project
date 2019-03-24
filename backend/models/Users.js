@@ -47,6 +47,18 @@ const UserSchema = new Schema({
   }
 });
 
+UserSchema.pre('remove',function (next){
+  console.log(this);
+  this.model('messages').remove({$or:[
+    {sender: this._id},
+    {recipient: this._id}
+  ]},(err,res)=>{
+    console.log("triggered2");
+    next();
+  });
+  // + 자신이 쓴 게시글, 자신이 참여한 스터디에서 참여 취소하기
+})
+
 let User = module.exports = mongoose.model('users',UserSchema);
 
 module.exports.hashPassword = (password) => {

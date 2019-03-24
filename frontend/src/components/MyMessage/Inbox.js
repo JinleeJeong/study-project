@@ -14,7 +14,8 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button } from '@material-ui/core';
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
-
+import Chip from '@material-ui/core/Chip';
+import Moment from 'moment';
 
 const styles = theme => ({
   root: {
@@ -42,29 +43,36 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
   },
-   
-  // .oneLineEllipsis{
-  //   overflow: hidden;
-  //   text-overflow: ellipsis; 
-  //   white-space: nowrap;
-  // }
+  avatar: {
+    margin: 10,
+  },
+  chip: {
+    margin: theme.spacing.unit,
+  },
+  marginLeft:{
+    marginLeft: 25,
+  },
+
 });
 
 class Inbox extends Component {
 
   render() {
     const { classes } = this.props;
+    let date = new Date(this.props.sendedAt);
+    date = Moment(date).format('YYYY-MM-DD h:mm');
 
     const SecondarySenderAndDate = () => (
       <Fragment>
         <span>{this.props.sender.name}</span>
-        <span>{this.props.sendedAt}</span>
+        <span className = {classes.marginLeft}>{date}</span>
+        {this.props.seen ? null : <Chip label="New" component = "span" className={classes.chip} variant="outlined" />}
       </Fragment>
     );
 
     return (
       <ListItem>
-        <ExpansionPanel className ={classes.fullWidth}>
+        <ExpansionPanel onChange = {(e,expanded)=>{this.props.changeSeenHandler(expanded, this.props.listIdx, this.props.seen)}} className ={classes.fullWidth}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Checkbox
           color = "primary"
@@ -72,11 +80,11 @@ class Inbox extends Component {
           onClick={e => {e.stopPropagation()}}
           onChange = {(e)=> this.props.onChangeHandler(e,this.props.messageKey)}/>
         <ListItemAvatar>
-          <Avatar alt ="Remy Sharp" src = "http://dimg.donga.com/egc/CDB/KOREAN/Article/14/91/17/17/1491171704037.jpg"></Avatar>
+          <Avatar alt ="Remy Sharp" src = {`http://localhost:8080/${this.props.sender.image}`} className = {classes.avatar}></Avatar>
         </ListItemAvatar>
         <ListItemText
           //className={classes.textMiddle}
-          classes={ {primary:classes.heading} }
+          classes={ {primary: classes.heading} }
           primary = {this.props.title}
           secondary= {SecondarySenderAndDate()}>
         </ListItemText>
@@ -97,9 +105,11 @@ class Inbox extends Component {
 
 // sendedAt 변경하기 
 Inbox.propTypes = {
+  changeSeenHandler: PropTypes.func.isRequired,
   onChangeHandler: PropTypes.func.isRequired,
   handleOpen: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
+  listIdx: PropTypes.number.isRequired,
   messageKey: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   body: PropTypes.string.isRequired,

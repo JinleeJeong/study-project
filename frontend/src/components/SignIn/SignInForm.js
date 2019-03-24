@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import { green,red } from '@material-ui/core/colors';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import { AppContext } from '../../contexts/appContext';
 
 
 const style = theme => ({
@@ -18,7 +19,7 @@ const style = theme => ({
   },
 
   input:{
-    width: 100
+    width: '100%'
   },
 
   TextField: {
@@ -52,10 +53,14 @@ const style = theme => ({
     '&:hover': {
       backgroundColor: green[800],
     },
+  },
+  removeLinkDec: {
+    textDecoration : 'none !important' 
   }
 });
 
 class SignInForm extends Component {
+  static contextType = AppContext;
 
   constructor(props){
     super(props);
@@ -123,7 +128,9 @@ setValidationResult (validationResult){
         password: password,
       })
       .then(res => {
-        console.log(res.message)
+        if (res.state !== 'success')
+          this.context.actions.snackbarOpenHandler(res.message,res.state);
+        
         this.props.history.push(res.url)
       })
       .catch(err=> console.log(err));
@@ -137,7 +144,7 @@ setValidationResult (validationResult){
 
     return (
       <Card
-      alignItems ="center"
+      style ={{alignItems : "center"}}
     >
       <CardHeader style={{ textAlign: 'center' }} component="h5" title ="로그인"/>
       <form onSubmit = {this.onSubmit} className={classes.container}>
@@ -174,8 +181,8 @@ setValidationResult (validationResult){
           >
             로그인
           </Button>
-          <a className = {`removeLinkDec ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/google_auth"><Button variant="contained" className={`${classes.GoogleCol} ${classes.Button}`}>구글 계정으로 시작하기</Button></a>
-          <a className = {`removeLinkDec ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/naver_auth"><Button variant="contained" className={`${classes.NaverCol} ${classes.Button}`}>네이버 계정으로 시작하기</Button></a>
+          <a className = {`${classes.removeLinkDec} ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/google_auth"><Button variant="contained" className={`${classes.GoogleCol} ${classes.Button}`}>구글 계정으로 시작하기</Button></a>
+          <a className = {`${classes.removeLinkDec} ${classes.ButtonMargin} ${classes.ItemCenter}`} href = "http://localhost:8080/api/users/naver_auth"><Button variant="contained" className={`${classes.NaverCol} ${classes.Button}`}>네이버 계정으로 시작하기</Button></a>
       </form>
 
     </Card>

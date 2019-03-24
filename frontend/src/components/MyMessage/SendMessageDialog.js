@@ -58,7 +58,18 @@ class SendMessageDialog extends Component {
 
   sendMessage(){
     const {sendMessageTo, messageTitle, messageBody} = this.state;
-    apiClient.post('/messages/send',{recipientEmail: sendMessageTo, messageTitle: messageTitle, messageBody: messageBody, senderId: this.context.state.signInInfo.id})
+    if (sendMessageTo === null || messageTitle === null || messageBody === null || 
+      sendMessageTo === '' || messageTitle === '' || messageBody === ''){
+        this.context.actions.snackbarOpenHandler("공란이 있을 수 없습니다.",'warning');
+        return;
+      }
+
+    if (sendMessageTo.trim() === this.context.state.signInInfo.email){
+      this.context.actions.snackbarOpenHandler("자기 자신에게 쪽지를 전송할 수 없습니다.",'warning');
+      return;
+    }
+
+    apiClient.post('/messages/send',{recipientEmail: sendMessageTo.trim(), messageTitle: messageTitle, messageBody: messageBody, senderId: this.context.state.signInInfo.id})
     .then(res=> {
       this.context.actions.snackbarOpenHandler(res.message,res.state,{
         vertical: 'bottom',
@@ -122,6 +133,7 @@ class SendMessageDialog extends Component {
             fullWidth
             margin="normal"
             variant="outlined"
+            autoFocus = {!Boolean(this.props.initialRecipientEmail)}
             InputLabelProps={{
               shrink: true,
             }}
@@ -132,7 +144,7 @@ class SendMessageDialog extends Component {
             id="outlined-full-width"
             label="제목"
             name = 'messageTitle'
-            autoFocus
+            autoFocus = {Boolean(this.props.initialRecipientEmail)}
             className = {classes.dialogTextField}
             placeholder="내용"
             fullWidth

@@ -17,7 +17,7 @@ function socialLogin (service,profile,done){
     name: null,
     address: null ,
     interests: null ,
-    image: null ,
+    image: 'coverimg/defaultAvartar.png',
     sex: null ,
     birth: null ,
     about: null ,
@@ -51,18 +51,18 @@ function socialLogin (service,profile,done){
         //URL필드는 request 이후 어느 페이지로 돌아갈지에 대한 정보를 나타낸다. 
         //null -> 초기 요청 페이지로 돌아간다.(ex. SignInpage에서 요청을 한 경우 SignInpage로 돌아간다.)
         newUser.save()
-          .then(user => done(null,user,{state: 'fail', message:'로그인에 성공했습니다.', url: 'http://localhost:3000'}))
-          .catch(err => done(err,null,{state: 'fail', message:'회원 가입중 오류가 발생했습니다.', url: null}));   
+          .then(user => done(null,user,{state: 'success', message:'로그인에 성공했습니다.', url: 'http://localhost:3000'}))
+          .catch(err => done(err,null,{state: 'error', message:'회원 가입중 오류가 발생했습니다.', url: null}));   
 
       }else{
         // 이미 회원인 경우
         if (user.strategy == "local")  // local strategy로 가입한 경우
-          done(null,null,{state: 'fail', message:'이미 가입된 아이디입니다.', url: null});
+          done(null,null,{state: 'warning', message:'이미 가입된 아이디입니다.', url: null});
         else // 로그인 성공
           done(null,user,{state: 'success', message:'로그인에 성공했습니다.', url: 'http://localhost:3000'});
       }
     })
-    .catch(err => done(err,null,{state: 'fail', message:'회원 조회중 오류가 발생했습니다.', url: null}));
+    .catch(err => done(err,null,{state: 'error', message:'회원 조회중 오류가 발생했습니다.', url: null}));
 }
 
 module.exports = (passport) => {
@@ -75,12 +75,12 @@ module.exports = (passport) => {
         .then(user => {
           // 회원이 아닌 경우 
           if (!user) {
-            return done(null, null,{state: 'fail', message: '등록되지 않은 email입니다.', url:'/signin'});
+            return done(null, null,{state: 'warning', message: '등록되지 않은 email입니다.', url: null});
           }
           // 해당 유저가 LocalStrategy를 사용해 가입했는지 확인한다. 
           // ex) Google Oauth로 가입한 경우 Google Oauth 로그인을 방식을 이용해 로그인을 진행해야 한다.  
           if (user.password == null && user.strategy != 'local') {
-            return done(null, null, {state: 'fail', message: '비밀번호가 일치하지 않습니다.', url:'/signin'});
+            return done(null, null, {state: 'warning', message: '비밀번호가 일치하지 않습니다.', url: null});
           }
 
           // 입력한 Password가 DB 정보와 일치하는지 확인한다. 
@@ -90,10 +90,11 @@ module.exports = (passport) => {
             // 일치할 경우 
             if(isMatch) {
               // executing done method -> passport.serializeUser
+              // baseurl 로 돌아간다. 
               return done(null, user, {state: 'success', message: '로그인에 성공했습니다.', url:''});
             } else{
               // 일치하지 않는 경우
-              return done(null, null, {state: 'fail', message: '비밀번호가 일치하지 않습니다.', url:'/signin'});
+              return done(null, null, {state: 'warning', message: '비밀번호가 일치하지 않습니다.', url: null});
             }
           });
         })

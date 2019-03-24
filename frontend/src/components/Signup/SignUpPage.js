@@ -1,9 +1,19 @@
 import React, {Component} from 'react';
-
-import './SignUpPage.css';
-
 import SignUpForm from './SignUpForm';
 import { AppContext } from '../../contexts/appContext';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  page: {
+    width: '70vw',
+    minHeight: '60vh',
+    margin: '10vh auto',
+  },
+  formSize : {
+    maxWidth: '600px',
+    margin: 'auto'
+  },
+});
 
 class SignUpPage extends Component {
   static contextType = AppContext;
@@ -14,19 +24,21 @@ class SignUpPage extends Component {
       loading: true
     };
   }
+
   componentDidMount() {
     this.context.actions.checkAuth()
-      .then(()=>{this.setState({...this.state,loading: false}); 
-        console.log("change")});
+      .then(this.setState({...this.state,loading: false}));
+
   }
 
   render (){
+    const {classes} = this.props;
     const {loading} = this.state;
 
       return (
-        <div className = "page">
+        <div className = {classes.page}>
           {loading ? null :( 
-            <div className = "formSize">
+            <div className = {classes.formSize}>
               <SignUpForm/>
             </div>)
           }
@@ -35,5 +47,5 @@ class SignUpPage extends Component {
   }
 }
 
-export default SignUpPage;
+export default withStyles(styles)(SignUpPage);
 
