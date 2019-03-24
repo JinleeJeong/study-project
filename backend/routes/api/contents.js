@@ -3,7 +3,7 @@ const router = express.Router();
 const Contents = require('../../models/Contents.js');
 const multer = require('multer');
 const maxSize = 5 * 1024 * 1024;
-const basicImgPath = 'coverImg\\study-basic.jpg';
+const basicImgPath = 'coverimg\\study-basic.jpg';
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
@@ -115,7 +115,18 @@ router.get('/detail/:id', (req,res,next) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  })});
+  })
+});
+
+//
+router.post('/join/:id', (req, res, next) => {
+  console.log(req);
+  Contents.findOneAndUpdate({ id: req.params.id }, { $push: { participants: req.user.email } }, (err, contents) => {
+    if (err) return next(err);
+    //console.log(res);
+    res.json(contents);
+  })
+});
   
 
 module.exports = router;

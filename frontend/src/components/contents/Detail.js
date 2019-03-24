@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { AppContext } from '../../contexts/appContext';
-import { withStyles, Button, Typography, Card, CardContent, CardMedia, Divider } from '@material-ui/core';
+import { withStyles, Button, Typography, Card, CardContent, CardMedia, Divider, List, ListItem, ListItemText, Avatar } from '@material-ui/core';
 import { Group, Place, Update, Category, } from '@material-ui/icons';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
 /* global naver */
 
 const style = theme => ({
@@ -54,14 +50,14 @@ const style = theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 20,
+    marginLeft: 60,
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
   },
   button: {
-    width: '45%',
+    width: '80%',
     color: 'black',
     margin: theme.spacing.unit,
   },
@@ -96,28 +92,49 @@ class Detail extends Component {
   static contextType = AppContext;
 
   state = {
-    users: [],
+    participants: [],
     content: [],
     detailTerm: this.props.match.params.id,
   };
 
   async componentDidMount() {
-    const { detailTerm } = this.state;
-
-    this.setState({
-      content: await this.context.actions.getContentsDetail(detailTerm),
-    });
-
-    console.log(this.state.content.latlng);
+    const { detailTerm, } = this.state;
+    const content = await this.context.actions.getContentsDetail(detailTerm);
+    const location = await this.getLatLngByAddress(content.userLocation);
 
     const map = new naver.maps.Map('naverMap', {
-      center: new naver.maps.LatLng(37.3595704, 127.105399),
+      center: new naver.maps.LatLng(location),
       zoom: 10
     });
     const marker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(37.3595704, 127.105399),
+      position: new naver.maps.LatLng(location),
       map: map,
     });
+
+    this.setState({
+      content: content,
+    });
+  };
+
+  getLatLngByAddress = (address) => {
+    return new Promise((resolve, reject) => {
+      naver.maps.Service.geocode({
+        address: address
+    }, (status, response) => {
+        if (status === naver.maps.Service.Status.ERROR) {
+          reject(alert('지도 API 오류입니다.'));
+        }
+        let item = response.result.items[0]
+        resolve(item.point);
+      });
+    });
+  };
+
+  joinStudy = async () => {
+    const { detailTerm } = this.state;
+    const user = this.context.state.signInInfo.email;
+    await this.context.actions.joinStudy(detailTerm);
+    this.props.history.push("/");
   };
 
   render() {
@@ -138,13 +155,16 @@ class Detail extends Component {
               <Typography>주최: {content.leader}</Typography>
             </div>
             <div className={classes.joinContainer}>
-              <div style={{ marginRight: 20 }}>
-                <Typography variant="h6">참석하시겠습니까?</Typography>
+              {this.context.state.signInInfo.status ? (<div style={{ marginRight: 20 }}>
+                <Typography variant="h6">참여 하시겠습니까?</Typography>
                 <div className={classes.buttonContainer}>
-                  <Button className={classes.button} variant="contained" color="primary">V</Button>
-                  <Button className={classes.button} variant="contained" color="primary">X</Button>
+                  <Button className={classes.button} variant="contained" color="primary" onClick={this.joinStudy}>
+                    참여하기
+                  </Button>
                 </div>
-              </div>
+              </div>) : (<div style={{ marginRight: 20, textAlign: 'center' }}>
+                <Typography variant="h6" >스터디에 참여 하려면 로그인 해주세요.</Typography>
+              </div>)}
             </div>
           </div>
         </div>
@@ -160,9 +180,12 @@ class Detail extends Component {
             </Card>
             <div className={classes.detailContent}>
               <Typography variant="h5" style={{ marginBottom: 15 }}>세부 사항</Typography>
-              <Typography style={{ width: '88%', fontSize: 18, }} component="p">{`${content.description}`.split('\n').map(str => {
+              <Typography style={{ width: '88%', fontSize: 18, marginBottom: 25 }} component="p">{`${content.description}`.split('\n').map(str => {
                 return (<span key={str}>{str}<br/></span>)
               })}</Typography>
+              <Typography variant="h5" style={{ marginBottom: 15 }}>참석자</Typography>
+              <Typography>{content.leader}</Typography>
+              {content.participants}
             </div>
           </div>
           <Card style={{ width: '35%', height: '80%', }}>

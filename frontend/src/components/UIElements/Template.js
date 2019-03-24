@@ -179,7 +179,7 @@ class Template extends Component {
                                         let path = `detail/`+board.id;
                                         this.props.history.push(path);
       
-                                      }}><div><img src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" width ="70%" height="auto"/></div></Button>
+                                      }}><div><img src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" width ="70%" height="auto"/></div></Button>''
                           <CardContent className={classes.cardContent}>
                             <Typography gutterBottom variant="h5" component="h2">
                             <div style ={{marginBottom: "3vh"}}>{board.title}</div>

@@ -13,8 +13,7 @@ const ContentsSchema = new Schema({
   createdAt : { type: Date, default: Date.now },
   views : {type:Number, default : 0},
   leader: String,
-  Participants: Array,
-  latlng: Object,
+  participants: Array,
 });
 autoIncrement.initialize(mongoose.connection);
 ContentsSchema.plugin(autoIncrement.plugin, {model : 'Contents' , field : 'id' , startAt : 1 })

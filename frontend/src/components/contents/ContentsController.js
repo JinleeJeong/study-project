@@ -86,7 +86,6 @@ class ContentsController extends Component {
     description: '',
     addresses: [],
     selectedLocation: '',
-    latlng: '',
   }
 
   categoryHandler = (e) => {
@@ -110,7 +109,7 @@ class ContentsController extends Component {
   //확인 버튼 클릭시 formData 초기화 후 context addContents에 formData 전달하여 호출
   addContents = async (e) => {
     e.preventDefault();
-    const { title, selectedCategories: categories, description, selectedLocation: userLocation, latlng } = this.state;
+    const { title, selectedCategories: categories, description, selectedLocation: userLocation, } = this.state;
     const leader = this.context.state.signInInfo.email;
     const coverImg = document.getElementById('coverImg').files[0];
 
@@ -122,7 +121,6 @@ class ContentsController extends Component {
         userLocation,
         coverImg,
         leader,
-        latlng,
       };
   
       const formData = new FormData();
@@ -140,7 +138,7 @@ class ContentsController extends Component {
     const currentLatLng = new naver.maps.LatLng(currentPosition.lat, currentPosition.lng);
     
     this.setState({
-      addresses: await this.getAddresses(currentLatLng),
+      addresses: await this.getAddressesByLatLng(currentLatLng),
     });
 
     const map = new naver.maps.Map('naverMap', {
@@ -152,16 +150,14 @@ class ContentsController extends Component {
       map: map,
     });
     naver.maps.Event.addListener(map, 'click', async (e) => {
-      console.log(e.latlng);
       marker.setPosition(e.latlng);
       this.setState({
-        addresses: await this.getAddresses(e.latlng),
-        latlng: e.latlng,
+        addresses: await this.getAddressesByLatLng(e.latlng),
       });
     });
   };
 
-  getAddresses = (latlng) => {
+  getAddressesByLatLng = (latlng) => {
     const tm128 = naver.maps.TransCoord.fromLatLngToTM128(latlng);
     
     return new Promise((resolve, reject) => {
