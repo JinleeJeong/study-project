@@ -9,15 +9,20 @@ import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-// import Icon from '@material-ui/core/Icon';
 import { AppContext } from '../../contexts/appContext';
 import { Link } from 'react-router-dom';
-
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import MenuItem from '@material-ui/core/MenuItem';
+import ReactDOM from 'react-dom';
+import './Template.css';
 
 const styles = theme => (
     
   {
+      
       default : {
         color : '#90CAF9',
       },
@@ -66,7 +71,12 @@ const styles = theme => (
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing.unit * 6,
       },
-    
+      rightIcon: {
+        marginLeft: theme.spacing.unit,
+      },
+      button: {
+        margin: theme.spacing.unit,
+      },
     });
 class Template extends Component {
     static contextType = AppContext;
@@ -82,26 +92,26 @@ class Template extends Component {
         contentsAttention1: [],
         contentsAttention2: [],
         searchTerm: '',
-        value: 0
+        values: 0,
+        labelWidth: 0,
       }
       
-      this.searchUpdated = this.searchUpdated.bind(this);
       this.buttonClicked = this.buttonClicked.bind(this);
     }
   
     buttonClicked(e) {
-      this.setState({value: this.state.value+1});
+      this.setState({values: this.state.values+1});
     }
     shouldComponentUpdate(nextProps, nextState) {
-      return this.state.value === nextState.value || this.state.searchTerm === nextState.searchTerm;
+      return this.state.values === nextState.values || this.state.searchTerm === nextState.searchTerm;
     }
     
     async componentDidMount() {  
       this.context.actions.checkAuth();
-  
+      
       this.context.actions.getCurrentPosition();
-    
       this.setState({
+        labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
         contentsRepresentation1: await this.context.actions.getContentsRepresentation1(), // 대표 1
         contentsRepresentation2: await this.context.actions.getContentsRepresentation2(), // 대표 2
         
@@ -112,23 +122,19 @@ class Template extends Component {
       });
 
     };
-  
-    searchUpdated (term) {
-      // if(term === ''){
-      //   this.setState({searchTerm : 'ForExample'})
-      // }
-      // else {
-      //   this.setState({searchTerm : term})
-      // }
-      this.setState({
-        searchTerm: term
+    
+    handleChange = event => {
+      this.setState({ [event.target.name]: event.target.value,
+        searchTerm : event.target.value, 
+      }, () => {
+        console.log(this.state.searchTerm);
       });
     };
-    
-    
     render() {
       const { lat, lng } = this.context.state;
+      console.log(this.state.contentsNew);
       const { classes } = this.props;
+
       return (
         <Fragment>
           <div className={classes.heroUnit} style={{textAlign:"center"}}>
@@ -139,29 +145,59 @@ class Template extends Component {
               <div className={classes.heroButtons}>
                 <Grid container spacing={16} justify="center">
                   <Grid item>
-                    <Link to={`/write?lat=${lat}&lng=${lng}`}><Button variant="contained" color="primary" style={{ fontSize: "1.5vh", backgroundColor : "#cc66ff", color : "white"}}>스터디 시작하기</Button></Link>
+                  <div className="textDecoration">
+                    <Link to={`/write?lat=${lat}&lng=${lng}`}><Button variant="contained" color="secondary" style={{ fontSize: "1.5vh", textDecoration : "none"}}>스터디 시작하기</Button></Link>
+                  </div>
                   </Grid>
                 </Grid>
+                
               </div>
             </div>
           </div>
 
 
           <div className={classNames(classes.layout, classes.cardGrid)}>
-              <TextField
-                onChange={this.searchUpdated}
-                style={{marginBottom:"3vh", width:"20vh"}}
-                id="outlined-search"
-                placeholder="Search Category"
-                type="search"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
-              <Link to={`/category/`+this.state.searchTerm+`/`}>
-                 <span 
-                    style={{position:"relative", right:"2vh", top:"2.7vh", color : "black"}}
-                    className="glyphicon glyphicon-search" aria-hidden="true" ></span>
+          <FormControl style = {{width : "25vh"}}variant="outlined" className={classes.formControl}>
+              <InputLabel
+                ref={ref => {
+                  this.InputLabelRef = ref;
+                }}
+                htmlFor="outlined-age-simple"
+              >
+                Category
+              </InputLabel>
+              <Select
+                value={this.state.searchTerm}
+                onChange={this.handleChange}
+                input={
+                  <OutlinedInput
+                    labelWidth={this.state.labelWidth}
+                    name="category"
+                    id="outlined-age-simple"
+                  />
+                }
+              >
+                
+                <MenuItem value={'영어'}>영어</MenuItem>
+                <MenuItem value={'일본어'}>일본어</MenuItem>
+                <MenuItem value={'중국어'}>중국어</MenuItem>
+                <MenuItem value={'회화'}>회화</MenuItem>
+                <MenuItem value={'취업준비'}>취업준비</MenuItem>
+                <MenuItem value={'면접'}>면접</MenuItem>
+                <MenuItem value={'자기소개서'}>자기소개서</MenuItem>
+                <MenuItem value={'프로젝트'}>프로젝트</MenuItem>
+                <MenuItem value={'코딩 테스트'}>코딩 테스트</MenuItem>
+                <MenuItem value={'전공'}>전공</MenuItem>
+                <MenuItem value={'인적성/NCS'}>인적성/NCS</MenuItem>
+              </Select>
+        </FormControl>
+              
+              <Link style={{textDecoration : "none"}} to={`/category/`+this.state.searchTerm+`/`}>
+                <Button style={{height: "4.7vh"}} variant="contained" color="secondary" className={classes.button}>
+                  검색
+                  {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
+                  
+                </Button>
               </Link>
 
 
@@ -173,25 +209,27 @@ class Template extends Component {
                   <Grid container spacing={40}>
                     {this.state.contentsRepresentation1.map((board, index) => (
                       <Grid item key={index} sm={6} md={3} lg={3}>
-                        <Card className={classes.card}>
+                      <div className="mediaQuery" >
+                        <Card className={classes.card} style={{minHeight : "38vh"}}>
                         <div key={index}></div>
                           <Button style={{ width: "100%", height: "20vh"}}className="" onClick={()=>{
                                         let path = `detail/`+board.id;
                                         this.props.history.push(path);
       
-                                      }}><div><img src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" width ="70%" height="auto"/></div></Button>
+                                      }}><div><img className="mediaQueryImage" src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" height="auto"/></div></Button>
                           <CardContent className={classes.cardContent}>
                             <Typography gutterBottom variant="h5" component="h2">
                             <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                             </Typography>
                             <Typography>
-                            {board.category}
+                            <div>{board.categories + ''}</div>
                             </Typography> 
                           </CardContent>
                           <CardActions>
                           
                           </CardActions>
                         </Card>
+                        </div>
                       </Grid>
                     
                     ))}
@@ -201,7 +239,8 @@ class Template extends Component {
                     <Grid container spacing={40}>
                     {this.state.contentsRepresentation2.map((board, index) => (
                       <Grid item key={index} sm={6} md={3} lg={3}>
-                        <Card className={classes.card}>
+                      <div className="mediaQuery" >
+                        <Card className={classes.card} style={{minHeight : "38vh"}}>
                         <div key={index}></div>
                           <Button style={{ width: "100%", height: "20vh"}}className="" onClick={()=>{
                                         let path = `detail/`+board.id;
@@ -213,13 +252,14 @@ class Template extends Component {
                             <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                             </Typography>
                             <Typography>
-                            {board.category}
+                            {board.categories + ''}
                             </Typography> 
                           </CardContent>
                           <CardActions>
                           
                           </CardActions>
                         </Card>
+                        </div>
                       </Grid>
                     
                     ))}
@@ -237,7 +277,8 @@ class Template extends Component {
                 <Grid container spacing={40}>
                   {this.state.contentsNew.map((board, index) => (
                     <Grid item key={index} sm={6} md={3} lg={3}>
-                      <Card className={classes.card}>
+                    <div className="mediaQuery" >
+                      <Card className={classes.card} style={{minHeight : "38vh"}}>
                       <div key={index}></div>
                         <Button style={{ width: "100%", height: "20vh"}}className="" onClick={()=>{
                                       let path = `detail/`+board.id;
@@ -249,13 +290,14 @@ class Template extends Component {
                           <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                           </Typography>
                           <Typography>
-                          {board.category}
+                          {board.categories + ''}
                           </Typography> 
                         </CardContent>
                         <CardActions>
                         
                         </CardActions>
                       </Card>
+                      </div>
                     </Grid>
                   
                   ))}
@@ -265,7 +307,8 @@ class Template extends Component {
                   <Grid container spacing={40}>
                   {this.state.contentsAttention1.map((board, index) => (
                     <Grid item key={index} sm={6} md={3} lg={3}>
-                      <Card className={classes.card}>
+                    <div className="mediaQuery" >
+                      <Card className={classes.card} style={{minHeight : "38vh"}}>
                       <div key={index}></div>
                         <Button style={{ width: "100%", height: "20vh"}}className="" onClick={()=>{
                                       let path = `detail/`+board.id;
@@ -277,13 +320,14 @@ class Template extends Component {
                           <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                           </Typography>
                           <Typography>
-                          {board.category}
+                          {board.categories + ''}
                           </Typography> 
                         </CardContent>
                         <CardActions>
                         
                         </CardActions>
                       </Card>
+                      </div>
                     </Grid>
                   
                   ))}
@@ -293,7 +337,8 @@ class Template extends Component {
                   <Grid container spacing={40}>
                   {this.state.contentsAttention2.map((board, index) => (
                     <Grid item key={index} sm={6} md={3} lg={3}>
-                      <Card className={classes.card}>
+                    <div className="mediaQuery" >
+                      <Card className={classes.card} style={{minHeight : "38vh"}}>
                       <div key={index}></div>
                         <Button style={{ width: "100%", height: "20vh"}}className="" onClick={()=>{
                                       let path = `detail/`+board.id;
@@ -305,13 +350,14 @@ class Template extends Component {
                           <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                           </Typography>
                           <Typography>
-                          {board.category}
+                          {board.categories + ''}
                           </Typography> 
                         </CardContent>
                         <CardActions>
                         
                         </CardActions>
                       </Card>
+                      </div>
                     </Grid>
                   
                   ))}

@@ -32,11 +32,11 @@ class TopAppBar extends Component {
         <AppBar position="static">
           <Toolbar>
             <div className={classes.grow}>
-              <Link to="/" >
+              <Link to="/templates" >
                 <img src={logo} color="inherit" alt="logo" height="40" width="150" />
               </Link>
             </div>
-            <Button className={classes.button} component={Link} to="/contents" color="inherit">현재 스터디 목록</Button>
+            <Button className={classes.button} component={Link} to="/AllContent" color="inherit">현재 스터디 목록</Button>
             <Button className={classes.button} component={Link} to="/signup" color="inherit">회원가입</Button>
             {this.context.state.signInInfo.status === null ? <Button style={{width:'100px'}}> </Button> : this.context.state.signInInfo.status === false ?
                 (<Button className={classes.button} component={Link} to="/signin" color="inherit"> 로그인 </Button>)
