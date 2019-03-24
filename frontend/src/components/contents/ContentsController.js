@@ -109,32 +109,36 @@ class ContentsController extends Component {
   //확인 버튼 클릭시 formData 초기화 후 context addContents에 formData 전달하여 호출
   addContents = async (e) => {
     e.preventDefault();
-    const { title, selectedCategories: categories, description, selectedLocation: userLocation } = this.state;
+    const { title, selectedCategories: categories, description, selectedLocation: userLocation, } = this.state;
+    const leader = this.context.state.signInInfo.email;
     const coverImg = document.getElementById('coverImg').files[0];
 
-    const dataInObject = {
-      title,
-      categories,
-      description,
-      userLocation,
-      coverImg,
-    };
-
-    const formData = new FormData();
-    Object.keys(dataInObject).map((key) => {
-      return formData.append(key, dataInObject[key]);
-    });
-    
-    await this.context.actions.addContents(formData);
-    this.props.history.push("/");
-  }
+    if(title !== '' && categories !== '' && description !== '' && userLocation !== '') {
+      const dataInObject = {
+        title,
+        categories,
+        description,
+        userLocation,
+        coverImg,
+        leader,
+      };
+  
+      const formData = new FormData();
+      Object.keys(dataInObject).map((key) => {
+        return formData.append(key, dataInObject[key]);
+      });
+      
+      await this.context.actions.addContents(formData);
+      this.props.history.push("/");
+    } 
+  };
 
   async componentDidMount() {
     const currentPosition = queryString.parse(this.props.location.search);
     const currentLatLng = new naver.maps.LatLng(currentPosition.lat, currentPosition.lng);
     
     this.setState({
-      addresses: await this.getAddresses(currentLatLng),
+      addresses: await this.getAddressesByLatLng(currentLatLng),
     });
 
     const map = new naver.maps.Map('naverMap', {
@@ -148,12 +152,12 @@ class ContentsController extends Component {
     naver.maps.Event.addListener(map, 'click', async (e) => {
       marker.setPosition(e.latlng);
       this.setState({
-        addresses: await this.getAddresses(e.latlng),
+        addresses: await this.getAddressesByLatLng(e.latlng),
       });
     });
   };
 
-  getAddresses = (latlng) => {
+  getAddressesByLatLng = (latlng) => {
     const tm128 = naver.maps.TransCoord.fromLatLngToTM128(latlng);
     
     return new Promise((resolve, reject) => {

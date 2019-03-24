@@ -1,8 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var Contents = require('../../models/Contents.js');
-var multer = require('multer');
-var maxSize = 1024 * 1024;
+const express = require('express');
+const router = express.Router();
+const Contents = require('../../models/Contents.js');
+const multer = require('multer');
+const maxSize = 5 * 1024 * 1024;
+const basicImgPath = 'coverimg\\study-basic.jpg';
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
@@ -13,17 +14,18 @@ const storage = multer.diskStorage({
         
     }
 });
-const upload = multer({ 
+const upload = multer({
     storage: storage, 
     limits : { fileSize : maxSize },
-    fileFilter : function (req, file, callback) {
+    fileFilter : (req, file, callback) => {
       if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/bmp') {
-          req.fileValidationError = 'wrong mimetype';
-          return callback(null, false, new Error('wrong mimetype'));
+        console.log(file);
+        req.fileValidationError = '이미지 파일 형식이 아닙니다.';
+        return callback(null, false, new Error('이미지 파일 형식이 아닙니다.'));
       }
       callback(null, true);
     }
-}).single('coverImg')
+}).single('coverImg');
 
 /* GET ALL Contents */
 router.get('/', (req, res, next) => {
@@ -34,18 +36,17 @@ router.get('/', (req, res, next) => {
 });
 
 /* SAVE Contents formData로 들어온 데이터 저장 + imageUrl스키마 필드에 파일 경로 저장*/
-router.post('/',upload,(req, res, next) => {  
-
-  Contents.create({...req.body, imageUrl: req.file.path}, (err, post) => {
-    // console.log(req);
+router.post('/', upload, (req, res, next) => {
+  const imageUrl = req.file ? req.file.path : basicImgPath;
+  Contents.create({ ...req.body, categories: req.body.categories.split(","), imageUrl: imageUrl }, (err, contents) => {
     if (err) return next(err);
-    upload(req, res, () => {
-      if(req.fileValidationError){
-          return res.send(req.fileValidationError);
-      }
-      else
-          return res.send('/coverimg/' + req.file.filename);
-    });
+    else if(req.file) {
+      upload(req, res, () => {
+        if(req.fileValidationError) return res.send(req.fileValidationError);
+        else return res.send('/coverimg/' + req.file.filename);
+      });
+    }
+    else res.json(contents);
   });
 });
 
@@ -55,7 +56,7 @@ router.get('/representation1', (req, res, next) => {
     //console.log(res);
     res.json(contents);
   }).sort({views : -1})   
-    .where('category').in(['면접'])
+    .where('categories').in(['면접'])
     .limit(4);
 });
 
@@ -66,7 +67,7 @@ router.get('/representation2', (req, res, next) => {
     res.json(contents);
   })
   .sort({views : -1})
-  .where('category').in(['영어 회화'])
+  .where('categories').in(['영어'])
   .limit(4);
 });
 
@@ -114,7 +115,18 @@ router.get('/detail/:id', (req,res,next) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  })});
+  })
+});
+
+//
+router.post('/join/:id', (req, res, next) => {
+  console.log(req);
+  Contents.findOneAndUpdate({ id: req.params.id }, { $push: { participants: req.user.email } }, (err, contents) => {
+    if (err) return next(err);
+    //console.log(res);
+    res.json(contents);
+  })
+});
   
 
 module.exports = router;

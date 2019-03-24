@@ -10,10 +10,11 @@ const ContentsSchema = new Schema({
   description: String,
   userLocation: String,
   imageUrl: String,
-  createdAt : {type: Date, default: utc},
+  createdAt : { type: Date, default: Date.now },
   views : {type:Number, default : 0},
-  Participants: Array,
-  });
+  leader: String,
+  participants: Array,
+});
 autoIncrement.initialize(mongoose.connection);
 ContentsSchema.plugin(autoIncrement.plugin, {model : 'Contents' , field : 'id' , startAt : 1 })
 

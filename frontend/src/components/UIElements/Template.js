@@ -132,7 +132,7 @@ class Template extends Component {
       return (
         <Fragment>
           <div className={classes.heroUnit} style={{textAlign:"center"}}>
-            <div className={classes.heroContent} style={{maxWidth:"1000px"}}>
+            <div className={classes.heroContent} >
                   <video loop autoPlay={true} style={{width:"100%"}}>
                       <source type="video/mp4" data-reactid=".0.1.0.0.0" src={movie} />
                   </video>
@@ -179,7 +179,7 @@ class Template extends Component {
                                         let path = `detail/`+board.id;
                                         this.props.history.push(path);
       
-                                      }}><div><img src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" width ="70%" height="auto"/></div></Button>
+                                      }}><div><img src ={`http://localhost:8080/`+board.imageUrl} alt ="Testing" width ="70%" height="auto"/></div></Button>''
                           <CardContent className={classes.cardContent}>
                             <Typography gutterBottom variant="h5" component="h2">
                             <div style ={{marginBottom: "3vh"}}>{board.title}</div>
