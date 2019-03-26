@@ -5,7 +5,7 @@ var autoIncrement = require('mongoose-auto-increment');
 var utc = new Date();
 utc.setHours( utc.getHours() + 9);
 const ContentsSchema = new Schema(
-  {
+ {
   title: String,
   categories: Array,
   description: String,

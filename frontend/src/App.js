@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Route, } from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import SignUpPage from './components/Signup/SignUpPage';
 import SignInPage from './components/SignIn/SignInPage';
 import MyMessagePage from './components/MyMessage/MyMessagePage';
@@ -16,20 +16,22 @@ import AppContextProvider from './contexts/appContext';
 import Login from './components/UIElements/Login';
 import AllContent from './components/UIElements/AllContent';
 import CustomSnackbar from './components/UIElements/CustomSnackbar';
+import {withRouter} from 'react-router';
+
+const excludePage = [
+  '/'
+]
+
 class App extends Component {
   render() {
     
     return (
       <>
         <AppContextProvider>
-          <BrowserRouter>
             <div className="App">
             <div className="app-wrapper">
-            {
-              window.location.pathname!=='/' ? <TopAppBar/>:''
-            }
+            {excludePage.indexOf(this.props.history.location.pathname) < 0 ? <TopAppBar/>: null}
             <Route exact path="/" component={Login} />
-              {/* <TopAppBar /> */}
               <CustomSnackbar/>
               <Route path="/templates" component={Template} />
               <Route path="/write" component={ContentsController} />
@@ -44,17 +46,13 @@ class App extends Component {
               <Route path="/detail/:id" component={Detail} />
               <Route path="/detail//" component={Error}/>
               <Route path="/AllContent/" component = {AllContent}/>
-              {
-              window.location.pathname!=='/' ? <Footer/>:''
-              }
-              {/* <Footer/> */}
+              {excludePage.indexOf(this.props.history.location.pathname) < 0 ? <Footer/>: null}
               </div>
             </div>
-          </BrowserRouter>
         </AppContextProvider>
       </>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

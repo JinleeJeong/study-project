@@ -129,7 +129,7 @@ class ContentsController extends Component {
       });
       
       await this.context.actions.addContents(formData);
-      this.props.history.push("/");
+      this.props.history.push("/templates");
     } 
   };
 
