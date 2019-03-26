@@ -109,16 +109,16 @@ class ContentsController extends Component {
   //확인 버튼 클릭시 formData 초기화 후 context addContents에 formData 전달하여 호출
   addContents = async (e) => {
     e.preventDefault();
-    const { title, selectedCategories: categories, description, selectedLocation: userLocation, } = this.state;
-    const leader = this.context.state.signInInfo.email;
+    const { title, selectedCategories: categories, description, selectedLocation: studyLocation, } = this.state;
+    const leader = this.context.state.signInInfo.name;
     const coverImg = document.getElementById('coverImg').files[0];
 
-    if(title !== '' && categories !== '' && description !== '' && userLocation !== '') {
+    if(title !== '' && categories !== '' && description !== '' && studyLocation !== '') {
       const dataInObject = {
         title,
         categories,
         description,
-        userLocation,
+        studyLocation,
         coverImg,
         leader,
       };

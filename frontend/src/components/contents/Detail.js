@@ -100,7 +100,7 @@ class Detail extends Component {
   async componentDidMount() {
     const { detailTerm, } = this.state;
     const content = await this.context.actions.getContentsDetail(detailTerm);
-    const location = await this.getLatLngByAddress(content.userLocation);
+    const location = await this.getLatLngByAddress(content.studyLocation);
 
     const map = new naver.maps.Map('naverMap', {
       center: new naver.maps.LatLng(location),
@@ -132,7 +132,6 @@ class Detail extends Component {
 
   joinStudy = async () => {
     const { detailTerm } = this.state;
-    const user = this.context.state.signInInfo.email;
     await this.context.actions.joinStudy(detailTerm);
     this.props.history.push("/");
   };
@@ -198,7 +197,7 @@ class Detail extends Component {
                 <Divider />
                 <ListItem>
                   <Avatar className={classes.avatarIcon}><Place /></Avatar>
-                  <ListItemText primary="장소" secondary={content.userLocation} />
+                  <ListItemText primary="장소" secondary={content.studyLocation} />
                 </ListItem>
                 <Divider />
                 <ListItem>

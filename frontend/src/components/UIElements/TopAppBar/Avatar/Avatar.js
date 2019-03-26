@@ -63,7 +63,7 @@ class AvatarandDropdown extends React.Component {
     }else if (option === 'signout') {
       apiClient.post('/users/signout')
       .then (()=> {
-        window.location = '/';
+        window.location = '/templates';
     });
   }
 }

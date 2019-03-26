@@ -177,7 +177,8 @@ router.post('/checkAuth',(req, res, next )=>{
       status : true,
       id : req.user._id,
       email : req.user.email,
-      image: req.user.image
+      image: req.user.image,
+      name: req.user.name
     });
   }
   else{
@@ -185,7 +186,8 @@ router.post('/checkAuth',(req, res, next )=>{
       status : false,
       id: '',
       email : '',
-      image: ''
+      image: '',
+      name: '',
     });
   }
 });

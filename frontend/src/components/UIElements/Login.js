@@ -168,7 +168,7 @@ class login extends Component {
 
 		return (
 			<div className="login" style={{minHeight : "100vh" ,margin: "0", padding: "0"}}>
-				<main className={classes.main} style={{position : "absolute", width : "40vh", right : "25%", left : "25%", top : "15%"}}>
+				<main className={classes.main} style={{position : "absolute", right : "25%", left : "25%", top : "15%"}}>
 					<CssBaseline />
 					<Paper className={classes.paper} style={{paddingTop : "0", marginTop: 0}}>
 						

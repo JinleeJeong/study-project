@@ -19,6 +19,7 @@ const styles = {
     color: '#90CAF9',
     fontSize: 20,
     fontWeight: 500,
+    textDecoration: 'none',
   },
   button: {
     fontSize: 18,
@@ -40,7 +41,7 @@ class TopAppBar extends Component {
         <AppBar className={classes.appBar} position="static">
           <Toolbar>
             <div className={classes.grow}>
-              <Link className={classes.link} to="/templates"style={{color: '#90CAF9'}}>
+              <Link className={classes.link} to="/templates">
                 STUDYHUB
               </Link>
             </div>

@@ -16,6 +16,7 @@ import AppContextProvider from './contexts/appContext';
 import Login from './components/UIElements/Login';
 import AllContent from './components/UIElements/AllContent';
 import CustomSnackbar from './components/UIElements/CustomSnackbar';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import {withRouter} from 'react-router';
 
 const excludePage = [
@@ -29,9 +30,10 @@ class App extends Component {
       <>
         <AppContextProvider>
             <div className="App">
-            <div className="app-wrapper">
-            {excludePage.indexOf(this.props.history.location.pathname) < 0 ? <TopAppBar/>: null}
-            <Route exact path="/" component={Login} />
+              <div className="app-wrapper">
+              {excludePage.indexOf(this.props.history.location.pathname) < 0 ? <TopAppBar/>: null}
+              <Route exact path="/" component={Login} />
+              <CssBaseline />
               <CustomSnackbar/>
               <Route path="/templates" component={Template} />
               <Route path="/write" component={ContentsController} />
