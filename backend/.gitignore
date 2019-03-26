@@ -7,6 +7,7 @@
 /config/keys.js
 # testing
 /coverage
+/coverimg
 
 # production
 /build
