@@ -2,54 +2,50 @@ const express = require('express');
 const Messages = require('../../models/Message');
 const router = express.Router();
 const User = require('../../models/Users');
+const {ensureAuthenticatedErrorMessage,ensureAuthenticatedRedirect} = require('../../config/passport');
 
 // 특정 유저에게 온 message를 보내주는 router
-router.post('/', (req,res,next) => {
-  if (req.user){
-    const {total, showNum, page} = req.body;
-    if (total === null){
-      Messages.find({recipient : ObjectId(req.user.id)}).sort({$natural : -1})
-        .populate('sender', 'email name image')
-        .exec((err,data) =>{
-          if (err)
-            next(err);
-          
-          res.send({ 
-            data:{
-              list: data.slice(0,showNum),
-              total: data.length,
-              page : page
-            },
-            state: 'success',
-            message: ''
-            });
-        });
-    }else {
-      Messages.find({recipient: ObjectId(req.user.id)}).sort({$natural : -1}).skip((page-1) * showNum).limit(showNum)
-        .populate('sender', 'email name image')
-        .exec((err,data) =>{
-          if (err)
-            next(err);
-          
-          res.send({
-            data:{
-              list: data,
-              total: total,
-              page: page
-            },
-            state:'success',
-            message:''
+router.post('/', ensureAuthenticatedRedirect ,(req,res,next) => {
+  const {total, showNum, page} = req.body;
+  if (total === null){
+    Messages.find({recipient : ObjectId(req.user.id)}).sort({$natural : -1})
+      .populate('sender', 'email name image')
+      .exec((err,data) =>{
+        if (err)
+          next(err);
+        
+        res.send({ 
+          data:{
+            list: data.slice(0,showNum),
+            total: data.length,
+            page : page
+          },
+          state: 'success',
+          message: ''
           });
+      });
+  }else {
+    Messages.find({recipient: ObjectId(req.user.id)}).sort({$natural : -1}).skip((page-1) * showNum).limit(showNum)
+      .populate('sender', 'email name image')
+      .exec((err,data) =>{
+        if (err)
+          next(err);
+        
+        res.send({
+          data:{
+            list: data,
+            total: total,
+            page: page
+          },
+          state:'success',
+          message:''
         });
-    }
-  }
-  else{
-    res.send([])
+      });
   }
 });
 
 // 현재 읽지 않은 message의 개수를 반환하는 router
-router.post('/unseenmessages',(req,res,next)=>{
+router.post('/unseenmessages',ensureAuthenticatedRedirect,(req,res,next)=>{
   if (req.user){
     Messages.countDocuments({recipient: ObjectId(req.user.id), seen: false})
       .then(num=> res.send({unseenNumber: num}))
@@ -59,7 +55,7 @@ router.post('/unseenmessages',(req,res,next)=>{
   }
 });
 
-router.post('/remove',(req,res,next)=>{
+router.post('/remove',ensureAuthenticatedRedirect,(req,res,next)=>{
   const messageObj = req.body;
   const objToList = Object.keys(messageObj).map((each)=> (ObjectId(each)));
 
@@ -68,7 +64,7 @@ router.post('/remove',(req,res,next)=>{
     .catch(err=> next(err));  
 });
 
-router.post('/send',(req,res,next)=> {
+router.post('/send',ensureAuthenticatedRedirect,(req,res,next)=> {
   const {recipientEmail, messageTitle, messageBody, senderId} = req.body;
   
   User.findOne({email: recipientEmail}, '_id')
@@ -98,7 +94,7 @@ router.post('/send',(req,res,next)=> {
     })
 });
 
-router.post('/seenCheck',(req,res,next)=>{
+router.post('/seenCheck',ensureAuthenticatedRedirect,(req,res,next)=>{
   const {messageId} = req.body;
   Messages.update({_id: messageId}, {seen: true})
     .exec((err) =>{

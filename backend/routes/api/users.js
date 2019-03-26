@@ -5,6 +5,7 @@ const User = require('../../models/Users');
 const Token = require('../../models/Token');
 const mailer = require('../../service/mailer');
 const passport = require('passport');
+const {ensureAuthenticatedErrorMessage,ensureAuthenticatedRedirect} = require('../../config/passport');
 const url = require('url');
 const router = express.Router();
 let newUser;
@@ -30,7 +31,7 @@ function socialLoginRedirect(service, req, res, next) {
 }
 
 // test용 router
-router.get('/', (req,res) => {
+router.get('/',ensureAuthenticatedRedirect ,(req,res) => {
   res.send(req.header);
 });
 
@@ -74,7 +75,7 @@ router.post('/register', (req, res, next) => {
             });
             // 토큰 document 저장
             newToken.save()
-              .then(() => res.send({state: 'success', message:'회원가입에 성공했습니다.', url: ''}))
+              .then(() => res.send({state: 'success', message:'회원가입에 성공했습니다.', url: '/templates'}))
               .catch(err => next(err));
         })
         .catch(err => next(err));   
@@ -165,7 +166,6 @@ router.post('/signin',(req, res, next) => {
 
 // test 용 router
 router.get('/session',(req, res, next)=>{
-  console.log(req.session.passport.user);
   res.send(req.header)
 });
 

@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport')(passport);
+require('./config/passport').initialize(passport);
 
 app.use(logger('dev'));
 app.use(express.json());

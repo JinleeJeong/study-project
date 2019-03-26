@@ -40,7 +40,7 @@ class TopAppBar extends Component {
         <AppBar className={classes.appBar} position="static">
           <Toolbar>
             <div className={classes.grow}>
-              <Link className={classes.link} to="/"style={{color: '#90CAF9'}}>
+              <Link className={classes.link} to="/templates"style={{color: '#90CAF9'}}>
                 STUDYHUB
               </Link>
             </div>

@@ -51,7 +51,7 @@ function socialLogin (service,profile,done){
         //URL필드는 request 이후 어느 페이지로 돌아갈지에 대한 정보를 나타낸다. 
         //null -> 초기 요청 페이지로 돌아간다.(ex. SignInpage에서 요청을 한 경우 SignInpage로 돌아간다.)
         newUser.save()
-          .then(user => done(null,user,{state: 'success', message:'로그인에 성공했습니다.', url: 'http://localhost:3000'}))
+          .then(user => done(null,user,{state: 'success', message:'로그인에 성공했습니다.', url: 'http://localhost:3000/templates'}))
           .catch(err => done(err,null,{state: 'error', message:'회원 가입중 오류가 발생했습니다.', url: null}));   
 
       }else{
@@ -59,13 +59,13 @@ function socialLogin (service,profile,done){
         if (user.strategy == "local")  // local strategy로 가입한 경우
           done(null,null,{state: 'warning', message:'이미 가입된 아이디입니다.', url: null});
         else // 로그인 성공
-          done(null,user,{state: 'success', message:'로그인에 성공했습니다.', url: 'http://localhost:3000'});
+          done(null,user,{state: 'success', message:'로그인에 성공했습니다.', url: 'http://localhost:3000/templates'});
       }
     })
     .catch(err => done(err,null,{state: 'error', message:'회원 조회중 오류가 발생했습니다.', url: null}));
 }
 
-module.exports = (passport) => {
+module.exports.initialize = (passport) => {
   // 각 인증 Strategy에 따른 로직 설정
   // Custom 인증 방식을 사용할 경우  
   passport.use(
@@ -91,7 +91,7 @@ module.exports = (passport) => {
             if(isMatch) {
               // executing done method -> passport.serializeUser
               // baseurl 로 돌아간다. 
-              return done(null, user, {state: 'success', message: '로그인에 성공했습니다.', url:''});
+              return done(null, user, {state: 'success', message: '로그인에 성공했습니다.', url:'/templates'});
             } else{
               // 일치하지 않는 경우
               return done(null, null, {state: 'warning', message: '비밀번호가 일치하지 않습니다.', url: null});
@@ -145,4 +145,16 @@ module.exports = (passport) => {
       done(err, user);
     })
   });
+}
+
+module.exports.ensureAuthenticatedErrorMessage = (req, res, next) =>{
+  if(req.user)
+    return next();
+  res.send('허용되지 않은 요청입니다.');
+}
+
+module.exports.ensureAuthenticatedRedirect = (req, res, next) =>{
+  if (req.user)
+    return next();
+  res.redirect('http://localhost:3000');
 }

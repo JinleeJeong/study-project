@@ -212,7 +212,7 @@ class login extends Component {
 								>
 									로그인
 								</Button>
-								<Link to="/templates" onClick={() => window.location.refresh()}>
+								<Link to="/templates">
 								<Button
 									style = {{marginTop : 10}}
 									className = {`${classes.Button} ${classes.ItemCenter}`}
