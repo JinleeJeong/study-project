@@ -9,6 +9,8 @@ import { green,red } from '@material-ui/core/colors';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import { AppContext } from '../../contexts/appContext';
+import InputValidator from '../../helpers/InputValidator';
+import FormChecker from '../../helpers/FormChecker';
 
 
 const style = theme => ({
@@ -115,10 +117,55 @@ setValidationResult (validationResult){
     }));
   }
 
+  // 회원가입 버튼을 누를 때 실행되는 함수로서 사용자 입력 값의 유효성을 검사한 후 state를 업데이트한다. 
+async validateChangedField(fieldName,value){
+  
+  let formChecker,validationResult;
+
+  switch (fieldName){
+
+    case 'email' :
+      formChecker = new FormChecker (fieldName,value,[
+        {
+          method : InputValidator.isNotEmpty,
+          args : [],
+          message : '아이디를 입력해주세요.'
+        },
+        {
+          method : InputValidator.validate.isEmail,
+          args : [],
+          message : '올바른 이메일 형식이 아닙니다'
+        }
+      ]);
+      break
+
+  case 'password' :
+    formChecker = new FormChecker (fieldName,value,[
+      {
+        method : InputValidator.isNotEmpty,
+        args : [],
+        message : '비밀번호를 입력해주세요.'
+      }
+    ]);
+    break;
+
+  default :
+    break;
+
+  }
+      
+  validationResult = formChecker.validate();  
+  return await this.setValidationResult(validationResult);
+}
+
   onSubmit(e){
     //you cannot return false to prevent default behavior in React. You must call preventDefault explicitly. 
     e.preventDefault();
-  
+    
+    for (const [field, value] of Object.entries(this.state.formFieldInput)){
+      this.validateChangedField(field,value);
+    }
+
     const {emailValid,passwordValid} = this.state.formFieldValid;
     const {email,password} = this.state.formFieldInput;
 
@@ -135,8 +182,6 @@ setValidationResult (validationResult){
       })
       .catch(err=> console.log(err));
     }
-    else
-      console.log('Submit conditions are not satisfied..');
   }
   
   render (){

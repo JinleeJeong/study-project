@@ -75,11 +75,6 @@ class AvatarandDropdown extends React.Component {
   componentDidMount(){
     // 현재 로그인 유저가 읽지 않은 쪽지 개수를 요청한다. 
     this.context.actions.getUnseenMessage()
-    this.context.state.socketConnection.io.on('unseenMessage',(data) => this.getUnseenMessage(data));
-  }
-
-  componentWillUnmount(){
-    this.context.state.socketConnection.io.removeListener('unseenMessage',this.getUnseenMessage);
   }
 
   render() {

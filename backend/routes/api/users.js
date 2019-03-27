@@ -130,7 +130,7 @@ router.get('/verify',(req, res , next)=>{
       if (err) next(err)
       // redirect 추가
       if (!token){
-        res.send({state: 'fail', message:'해당하는 토큰이 존재하지 않습니다.', url: 'http://localhost:3000'})
+        res.send({state: 'error', message:'해당하는 토큰이 존재하지 않습니다.', url: 'http://localhost:3000'})
       }
       else{
         User.update({_id: token._id},{ $set: {verified: true}})

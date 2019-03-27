@@ -17,7 +17,7 @@ sockets.init = (server,sessionMiddleware) => {
   changeStream.on('change',(change)=>{
     // BroadCast 
     io.emit('unseenMessage',{recipient: change.fullDocument.recipient});
-    io.emit('test',change.fullDocument);
+    io.emit('getmessage',change.fullDocument);
   });  
 
 

@@ -77,9 +77,12 @@ export default class AppContextProvider extends Component {
           let io = this.state.socketConnection.io;
           const signInStatus = user.status;
 
-          if (io || !signInStatus){
+          if (!signInStatus){
             this.setState({
               ...this.state,
+              socketConnection:{
+                io: null
+              },
               signInInfo: {
                 status: user.status,
                 id : user.id,
@@ -89,24 +92,37 @@ export default class AppContextProvider extends Component {
             })
           }
           else{
-            io =  socketIOClient('http://localhost:8080');
+            // 새로 로그인을 하는 경우 
+            if (!this.state.signInInfo.status){
+              io =  socketIOClient('http://localhost:8080');
+              io.on('unseenMessage',(data) => {
+                console.log("unseenmessage")
+                if (data.recipient !== this.state.signInInfo.id)
+                  return;
+                console.log("only for" + this.state.signInInfo.email);
 
-            this.setState({
-              ...this.state,
-              socketConnection:{io: io},
-              signInInfo: {
-                status: user.status,
-                id : user.id,
-                email: user.email,
-                image : user.image
-              }
-            })
+                this.actions.getUnseenMessage();
+                this.actions.snackbarOpenHandler("메시지가 도착했습니다.","info");
+              });
+
+              this.setState({
+                ...this.state,
+                socketConnection:{io: io},
+                signInInfo: {
+                  status: user.status,
+                  id : user.id,
+                  email: user.email,
+                  image : user.image
+                }
+              });
+            }
           }
         })
         .catch(err=> console.log(err))
       },
 
       getUnseenMessage: ()=>{
+        console.log("called");
         return apiClient.post('/messages/unseenmessages')
           .then (unseenInfo =>{
             this.setState({

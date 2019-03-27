@@ -139,7 +139,7 @@ class MyMessagePage extends Component {
         return true
 
       this.getMessagesApi(this.state.messagePagerInfo, 'changeTotal', 1)
-        .then(res => {console.log(res);this.context.actions.snackbarOpenHandler('메시지가 도착했습니다.','info');} );
+        //.then(res => {console.log(res);this.context.actions.snackbarOpenHandler('메시지가 도착했습니다.','info');} );
     }
 
     getSelectedMessages(event,messageKey){
@@ -162,6 +162,7 @@ class MyMessagePage extends Component {
     }
 
     changeSeen(expanded, listIdx, seen){
+      console.log("changeseen");
       if (expanded && !seen){
         setTimeout(() => {
           apiClient.post('/messages/seenCheck',{messageId : this.state.messages[listIdx]._id})
@@ -202,13 +203,14 @@ class MyMessagePage extends Component {
     }
 
     async componentDidMount(){
+  
       this.context.actions.checkAuth()
         .then (()=> {
 
           if (!this.context.state.signInInfo.status)
             return;
           // 핸들러 등록 
-          this.context.state.socketConnection.io.on('test',(data) => this.getArrivalMessage(data));
+          this.context.state.socketConnection.io.on('getmessage',(data) => {this.getArrivalMessage(data);});
           this.getMessagesApi(this.state.messagePagerInfo)      
             .then(()=>{this.setState({...this.state,loading: false})});
         });
@@ -218,7 +220,8 @@ class MyMessagePage extends Component {
       console.log("unmount");
       // 핸들러 해제 
       if (this.context.state.socketConnection.io)
-        this.context.state.socketConnection.io.off('test');
+        this.context.state.socketConnection.io.off('getmessage');
+        //this.context.state.socketConnection.io.removeListener('unseenMessage',this.getUnseenMessage);
     }
     
     // 페이지 이동에 따른 message를 가져온다. 

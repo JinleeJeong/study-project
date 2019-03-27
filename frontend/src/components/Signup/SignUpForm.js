@@ -125,16 +125,16 @@ setValidationResult (validationResult){
   formFieldValid[validationResult['fieldName'] + 'Valid'] = validationResult['isCorrect'];
   formFieldMessage[validationResult['fieldName'] + 'ValError'] = validationResult['message'];
   
-  this.setState (
+  return new Promise(resolve => this.setState (
     prevState => ({
       ...prevState,
       formFieldValid :  formFieldValid,
       formFieldMessage : formFieldMessage
-    }));
+    }), ()=> resolve(this.state)));
 }
 
 // 회원가입 버튼을 누를 때 실행되는 함수로서 사용자 입력 값의 유효성을 검사한 후 state를 업데이트한다. 
-validateChangedField(fieldName,value){
+async validateChangedField(fieldName,value){
   
   let formChecker,validationResult;
 
@@ -214,7 +214,7 @@ validateChangedField(fieldName,value){
   }
       
   validationResult = formChecker.validate();  
-  this.setValidationResult(validationResult);
+  return await this.setValidationResult(validationResult);
 }
 
 onChange = name => e => {
@@ -238,7 +238,11 @@ onSubmit(e){
   //you cannot return false to prevent default behavior in React. You must call preventDefault explicitly. 
   e.preventDefault();
 
-  const {emailValid,userNameValid,passwordValid,passwordConfirmationValid} = this.state.formFieldValid;
+  for (const [field, value] of Object.entries(this.state.formFieldInput)){
+    this.validateChangedField(field,value);
+  }
+
+  const {emailValid, userNameValid, passwordValid, passwordConfirmationValid} = this.state.formFieldValid;
 
   if (emailValid === null && 
       userNameValid === null && 
@@ -246,8 +250,6 @@ onSubmit(e){
       passwordConfirmationValid === null) {
         this.registrationApiCall();
   }
-  else
-    console.log('Submit conditions are not satisfied..');
 }
 
 render (){
