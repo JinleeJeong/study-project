@@ -110,7 +110,7 @@ class ContentsController extends Component {
   addContents = async (e) => {
     e.preventDefault();
     const { title, selectedCategories: categories, description, selectedLocation: studyLocation, } = this.state;
-    const leader = this.context.state.signInInfo.name;
+    const { name: leader, email, image: profileImg } = this.context.state.signInInfo;
     const coverImg = document.getElementById('coverImg').files[0];
 
     if(title !== '' && categories !== '' && description !== '' && studyLocation !== '') {
@@ -121,6 +121,8 @@ class ContentsController extends Component {
         studyLocation,
         coverImg,
         leader,
+        email,
+        profileImg,
       };
   
       const formData = new FormData();

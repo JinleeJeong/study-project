@@ -11,7 +11,7 @@ import ContentsListView from './components/contents/ContentsListView';
 import NearContentsListView from './components/contents/NearContentsListView';
 import Footer from './components/UIElements/Footer';
 import CateGory from './components/category/CateGory';
-import Detail from './components/contents/Detail';
+import DetailContentsController from './components/contents/DetailContentsController';
 import AppContextProvider from './contexts/appContext';
 import Login from './components/UIElements/Login';
 import AllContent from './components/UIElements/AllContent';
@@ -45,7 +45,7 @@ class App extends Component {
               <Route path="/mymessagepage" component = {MyMessagePage}/>
               <Route path="/category/:id" component={CateGory} />
               <Route path="/category//" component={Error}/>
-              <Route path="/detail/:id" component={Detail} />
+              <Route path="/detail/:id" component={DetailContentsController} />
               <Route path="/detail//" component={Error}/>
               <Route path="/AllContent/" component = {AllContent}/>
               {excludePage.indexOf(this.props.history.location.pathname) < 0 ? <Footer/>: null}

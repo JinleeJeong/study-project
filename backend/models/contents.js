@@ -13,7 +13,7 @@ const ContentsSchema = new Schema(
   imageUrl: String,
   createdAt : { type: Date, default: utc },
   views : {type:Number, default : 0},
-  leader: String,
+  leader: Object,
   participants: Array,
 });
 autoIncrement.initialize(mongoose.connection);

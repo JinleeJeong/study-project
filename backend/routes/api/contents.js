@@ -38,7 +38,12 @@ router.get('/', (req, res, next) => {
 /* SAVE Contents formData로 들어온 데이터 저장 + imageUrl스키마 필드에 파일 경로 저장*/
 router.post('/', upload, (req, res, next) => {
   const imageUrl = req.file ? req.file.path : basicImgPath;
-  Contents.create({ ...req.body, categories: req.body.categories.split(","), imageUrl: imageUrl }, (err, contents) => {
+  const leader = {
+    name: req.body.leader,
+    email: req.body.email,
+    profileImg: req.body.profileImg,
+  };
+  Contents.create({ ...req.body, categories: req.body.categories.split(","), imageUrl: imageUrl, leader: leader }, (err, contents) => {
     if (err) return next(err);
     else if(req.file) {
       upload(req, res, () => {
@@ -121,7 +126,12 @@ router.get('/detail/:id', (req,res,next) => {
 //
 router.post('/join/:id', (req, res, next) => {
   console.log(req);
-  Contents.findOneAndUpdate({ id: req.params.id }, { $push: { participants: req.user.email } }, (err, contents) => {
+  const participants = [{
+    name: req.user.name,
+    email: req.user.email,
+    profileImg: req.user.image,
+  }];
+  Contents.findOneAndUpdate({ id: req.params.id }, { $push: { participants: participants } }, (err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
