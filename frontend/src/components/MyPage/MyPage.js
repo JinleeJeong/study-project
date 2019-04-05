@@ -25,29 +25,32 @@ const style = theme => ({
 class MyPage extends Component {
   static contextType = AppContext;
   
-  constructor(props){
-    super(props);
-    this.state ={
-      loading: true
-    };
-  }
+  // constructor(props){
+  //   super(props);
+  //   this.state ={
+  //     loading: true
+  //   };
+  // }
 
-  componentDidMount() {
-    this.context.actions.checkAuth()
-    .then(this.setState({...this.state,loading: false}));
-  }
+  // componentDidMount() {
+  //   this.context.actions.checkAuth()
+  //   .then(this.setState({...this.state,loading: false}));
+  // }
 
   render (){
     const {classes} = this.props;
-    const {loading} = this.state;
+    // const {loading} = this.state;
 
       return (
         <div className = {classes.page}>
-        {loading ? null :( 
+        {/* {loading ? null :( 
           <div className = {classes.mypageField}>
             <MypageField/>
           </div>)
-        }
+        } */}
+          <div className = {classes.mypageField}>
+            <MypageField/>
+          </div>
       </div>
       );
   }

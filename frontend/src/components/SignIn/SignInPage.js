@@ -38,7 +38,7 @@ class SignInPage extends Component {
             <div className = {classes.page}>
               {loading ? null :( 
                 <div className = {classes.formSize}>
-                  <SignInForm/>
+                  <SignInForm history = {this.props.history}/>
                 </div>)
               }
             </div>

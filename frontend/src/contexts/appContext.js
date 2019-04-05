@@ -78,6 +78,7 @@ export default class AppContextProvider extends Component {
           const signInStatus = user.status;
 
           if (!signInStatus){
+            localStorage.setItem("loginState",JSON.stringify(false));
             this.setState({
               ...this.state,
               socketConnection:{
@@ -104,6 +105,8 @@ export default class AppContextProvider extends Component {
                 this.actions.getUnseenMessage();
                 this.actions.snackbarOpenHandler("메시지가 도착했습니다.","info");
               });
+              
+              localStorage.setItem("loginState",JSON.stringify(true));
 
               this.setState({
                 ...this.state,
@@ -173,6 +176,24 @@ export default class AppContextProvider extends Component {
   }
 }
 
+function ContextHoc(WrappedComponent) {
+  return function ContextHoc(props) {
+    return (
+      <AppContext.Consumer>
+        {
+          ({ state, actions }) => (
+            <WrappedComponent
+              state={state}
+              actions={actions}
+            />
+          )
+        }
+      </AppContext.Consumer>
+    )
+  }
+}
+
 export {
   AppContext,
+  ContextHoc
 };

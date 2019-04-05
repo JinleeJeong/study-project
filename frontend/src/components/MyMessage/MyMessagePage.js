@@ -174,7 +174,8 @@ class MyMessagePage extends Component {
               messages : changedList,
             });
             this.context.actions.getUnseenMessage();
-          });
+          })
+          .catch(err => console.log(err));
         }, 400);
       }
     }
@@ -243,7 +244,8 @@ class MyMessagePage extends Component {
         console.log(res);
         this.getMessagesApi(this.state.messagePagerInfo,'changeTotal', -1 * Number(res.number))
         .then(this.context.actions.getUnseenMessage())
-      });
+      })
+      .catch(err => console.log(err));
     }
 
     handleOpen(to = null){

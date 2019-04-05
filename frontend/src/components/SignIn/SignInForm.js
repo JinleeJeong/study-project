@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {withRouter} from 'react-router';
 import apiClient from '../../helpers/apiClient';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
@@ -240,7 +239,7 @@ SignInForm.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles (style)(withRouter(SignInForm));
+export default withStyles (style)(SignInForm);
 
       // <form  noValidate autoComplete= "off">
       //   <TextField

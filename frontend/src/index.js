@@ -4,6 +4,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import {BrowserRouter} from 'react-router-dom';
+import AppContextProvider from '../src/contexts/appContext';
 
 const theme = createMuiTheme({
     typography: {
@@ -20,9 +21,11 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+        <AppContextProvider>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+      </AppContextProvider>
     </MuiThemeProvider>, document.getElementById('root')
 );
 

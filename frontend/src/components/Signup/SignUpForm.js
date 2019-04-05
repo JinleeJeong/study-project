@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {withRouter} from 'react-router'
 import PropTypes from 'prop-types';
 import apiClient from '../../helpers/apiClient';
 import InputValidator from '../../helpers/InputValidator';
@@ -336,4 +335,4 @@ SignUpForm.propTypes = {
   history: PropTypes.object.isRequired
 }
 
-export default withStyles (style)(withRouter(SignUpForm))
+export default withStyles (style)(SignUpForm)

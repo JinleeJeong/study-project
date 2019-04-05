@@ -12,22 +12,33 @@ import NearContentsListView from './components/contents/NearContentsListView';
 import Footer from './components/UIElements/Footer';
 import CateGory from './components/category/CateGory';
 import Detail from './components/contents/Detail';
-import AppContextProvider from './contexts/appContext';
+import {ContextHoc} from './contexts/appContext';
 import Login from './components/UIElements/Login';
 import AllContent from './components/UIElements/AllContent';
 import CustomSnackbar from './components/UIElements/CustomSnackbar';
 import {withRouter} from 'react-router';
+import PrivateRoute from './helpers/RedirectRoute';
 
 const excludePage = [
   '/'
 ]
 
 class App extends Component {
+
+  componentDidMount(){
+    this.props.actions.checkAuth();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location){
+      this.props.actions.checkAuth();
+    }
+  }
+
   render() {
     
     return (
       <>
-        <AppContextProvider>
             <div className="App">
             <div className="app-wrapper">
             {excludePage.indexOf(this.props.history.location.pathname) < 0 ? <TopAppBar/>: null}
@@ -39,8 +50,8 @@ class App extends Component {
               <Route path="/near" component={NearContentsListView} />
               <Route path="/signup" component = {SignUpPage}/>
               <Route path="/signin" component = {SignInPage}/>
-              <Route path="/mypage" component = {MyPage}/>
-              <Route path="/mymessagepage" component = {MyMessagePage}/>
+              <PrivateRoute path="/mypage" component = {MyPage}/>
+              <PrivateRoute path="/mymessagepage" component = {MyMessagePage}/>
               <Route path="/category/:id" component={CateGory} />
               <Route path="/category//" component={Error}/>
               <Route path="/detail/:id" component={Detail} />
@@ -49,10 +60,9 @@ class App extends Component {
               {excludePage.indexOf(this.props.history.location.pathname) < 0 ? <Footer/>: null}
               </div>
             </div>
-        </AppContextProvider>
       </>
     );
   }
 }
 
-export default withRouter(App);
+export default ContextHoc(withRouter(App));

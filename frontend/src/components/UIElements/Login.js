@@ -130,7 +130,7 @@ class login extends Component {
 		  formFieldMessage : formFieldMessage
 		}))
 	}
-	
+
 	  onChange = name => e =>{
 		const value = e.target.value;
 	  
@@ -162,7 +162,7 @@ class login extends Component {
 		}
 		else
 		  console.log('Submit conditions are not satisfied..');
-	  }
+	}
 	render (){
 			const { classes } = this.props;
 

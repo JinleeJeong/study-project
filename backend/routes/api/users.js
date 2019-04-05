@@ -198,7 +198,7 @@ router.post('/signout',(req, res, next)=>{
   });
 });
 
-router.post('/delete', async (req, res, next)=>{
+router.post('/delete', ensureAuthenticatedErrorMessage ,async (req, res, next)=>{
   console.log("delte");
 
   const app = await User.findOne({ _id: req.user._id}).exec();
