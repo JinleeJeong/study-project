@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const apiUrl = 'http://localhost:8080/api';
 //const apiUrl = '/api';
 const methods = ['get', 'post'];
@@ -9,6 +8,7 @@ function formatUrl(path) {
 }
 
 class ApiClient {
+
   constructor() {
     methods.forEach((method) => {
       this[method] = (path, data, config) => new Promise((resolve, reject) => {
@@ -19,7 +19,8 @@ class ApiClient {
             resolve(res.data);
           })
           .catch(err => {
-            reject(err);
+            const response = err.response;
+            reject({statusCode : response.status, ...response.data});
           });
       });
       return this[method];

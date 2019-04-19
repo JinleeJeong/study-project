@@ -150,7 +150,7 @@ module.exports.initialize = (passport) => {
 module.exports.ensureAuthenticatedErrorMessage = (req, res, next) =>{
   if(req.user)
     return next();
-  res.send('허용되지 않은 요청입니다.');
+  res.status(401).send({state: 'error' ,message: '허용되지 않은 요청입니다.'});
 }
 
 module.exports.ensureAuthenticatedRedirect = (req, res, next) =>{

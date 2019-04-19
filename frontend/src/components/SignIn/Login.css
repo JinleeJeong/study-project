@@ -1,4 +1,4 @@
-.login {
+/* .login {
     position : relative
 }
 .login::after{
@@ -15,7 +15,7 @@
         height: 100%;
         opacity : 0.7;
         z-index: -1;
-}
+} */
 .collection-create-form_last-form-item {
     margin-bottom: 0;
   }

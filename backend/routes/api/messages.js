@@ -5,7 +5,7 @@ const User = require('../../models/Users');
 const {ensureAuthenticatedErrorMessage,ensureAuthenticatedRedirect} = require('../../config/passport');
 
 // 특정 유저에게 온 message를 보내주는 router
-router.post('/', ensureAuthenticatedRedirect ,(req,res,next) => {
+router.post('/', ensureAuthenticatedErrorMessage ,(req,res,next) => {
   const {total, showNum, page} = req.body;
   if (total === null){
     Messages.find({recipient : ObjectId(req.user.id)}).sort({$natural : -1})
@@ -45,7 +45,7 @@ router.post('/', ensureAuthenticatedRedirect ,(req,res,next) => {
 });
 
 // 현재 읽지 않은 message의 개수를 반환하는 router
-router.post('/unseenmessages',ensureAuthenticatedRedirect,(req,res,next)=>{
+router.post('/unseenmessages',ensureAuthenticatedErrorMessage,(req,res,next)=>{
   if (req.user){
     Messages.countDocuments({recipient: ObjectId(req.user.id), seen: false})
       .then(num=> res.send({unseenNumber: num}))
@@ -55,7 +55,7 @@ router.post('/unseenmessages',ensureAuthenticatedRedirect,(req,res,next)=>{
   }
 });
 
-router.post('/remove',ensureAuthenticatedRedirect,(req,res,next)=>{
+router.post('/remove',ensureAuthenticatedErrorMessage,(req,res,next)=>{
   const messageObj = req.body;
   const objToList = Object.keys(messageObj).map((each)=> (ObjectId(each)));
 
@@ -64,7 +64,7 @@ router.post('/remove',ensureAuthenticatedRedirect,(req,res,next)=>{
     .catch(err=> next(err));  
 });
 
-router.post('/send',ensureAuthenticatedRedirect,(req,res,next)=> {
+router.post('/send',ensureAuthenticatedErrorMessage,(req,res,next)=> {
   const {recipientEmail, messageTitle, messageBody, senderId} = req.body;
   
   User.findOne({email: recipientEmail}, '_id')
@@ -94,7 +94,7 @@ router.post('/send',ensureAuthenticatedRedirect,(req,res,next)=> {
     })
 });
 
-router.post('/seenCheck',ensureAuthenticatedRedirect,(req,res,next)=>{
+router.post('/seenCheck',ensureAuthenticatedErrorMessage,(req,res,next)=>{
   const {messageId} = req.body;
   Messages.update({_id: messageId}, {seen: true})
     .exec((err) =>{

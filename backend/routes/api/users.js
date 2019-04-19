@@ -103,7 +103,6 @@ router.post('/register', (req, res, next) => {
                   _id: newUser._id,
                   token: secretToken
                 });
-
                 newToken.save()
                   .then(() => res.send({message: "회원가입에 성공했습니다."}))
                   .catch(err => next(err));
@@ -130,7 +129,7 @@ router.get('/verify',(req, res , next)=>{
       if (err) next(err)
       // redirect 추가
       if (!token){
-        res.send({state: 'fail', message:'해당하는 토큰이 존재하지 않습니다.', url: 'http://localhost:3000'})
+        res.send({state: 'error', message:'해당하는 토큰이 존재하지 않습니다.', url: 'http://localhost:3000'})
       }
       else{
         User.update({_id: token._id},{ $set: {verified: true}})
@@ -177,8 +176,7 @@ router.post('/checkAuth',(req, res, next )=>{
       status : true,
       id : req.user._id,
       email : req.user.email,
-      image: req.user.image,
-      name: req.user.name
+      image: req.user.image
     });
   }
   else{
@@ -186,8 +184,7 @@ router.post('/checkAuth',(req, res, next )=>{
       status : false,
       id: '',
       email : '',
-      image: '',
-      name: '',
+      image: ''
     });
   }
 });
@@ -200,7 +197,7 @@ router.post('/signout',(req, res, next)=>{
   });
 });
 
-router.post('/delete', async (req, res, next)=>{
+router.post('/delete', ensureAuthenticatedErrorMessage ,async (req, res, next)=>{
   console.log("delte");
 
   const app = await User.findOne({ _id: req.user._id}).exec();

@@ -39,7 +39,7 @@ class SignUpPage extends Component {
         <div className = {classes.page}>
           {loading ? null :( 
             <div className = {classes.formSize}>
-              <SignUpForm/>
+              <SignUpForm history ={this.props.history}/>
             </div>)
           }
         </div>
@@ -48,4 +48,3 @@ class SignUpPage extends Component {
 }
 
 export default withStyles(styles)(SignUpPage);
-

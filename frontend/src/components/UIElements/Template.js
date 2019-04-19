@@ -278,7 +278,7 @@ class Template extends Component {
                               </div>
                             </Typography>
                             <Typography>
-                              <div>{board.categories + ""}</div>
+                              {board.categories + ""}
                             </Typography>
                           </CardContent>
                           <CardActions />

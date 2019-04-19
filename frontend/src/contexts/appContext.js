@@ -18,8 +18,7 @@ export default class AppContextProvider extends Component {
       status : false,
       id: '',
       email : '',
-      image:'',
-      name: '',
+      image:''
     },
 
     unseenMessage : 0,
@@ -72,44 +71,61 @@ export default class AppContextProvider extends Component {
 
     checkAuth: async () => {
       return apiClient.post('/users/checkAuth')
-        .then(res => ({status: res.status, id: res.id, email: res.email, image: res.image, name: res.name }))
+        .then(res => ({status: res.status, id: res.id, email: res.email, image: res.image}))
         .then(user => {
           console.log(user);
           let io = this.state.socketConnection.io;
           const signInStatus = user.status;
 
-          if (io || !signInStatus){
+          if (!signInStatus){
+            localStorage.setItem("loginState",JSON.stringify(false));
             this.setState({
               ...this.state,
+              socketConnection:{
+                io: null
+              },
               signInInfo: {
                 status: user.status,
                 id : user.id,
                 email: user.email,
-                image: user.image,
-                name: user.name
+                image: user.image
               }
             })
           }
           else{
-            io =  socketIOClient('http://localhost:8080');
+            // 새로 로그인을 하는 경우 
+            if (!this.state.signInInfo.status){
+              io =  socketIOClient('http://localhost:8080');
+              io.on('unseenMessage',(data) => {
+                console.log("unseenmessage")
+                if (data.recipient !== this.state.signInInfo.id)
+                  return;
+                console.log("only for" + this.state.signInInfo.email);
 
-            this.setState({
-              ...this.state,
-              socketConnection:{io: io},
-              signInInfo: {
-                status: user.status,
-                id : user.id,
-                email: user.email,
-                image : user.image,
-                name: user.name
-              }
-            })
+                this.actions.getUnseenMessage();
+                this.actions.snackbarOpenHandler("메시지가 도착했습니다.","info");
+              });
+              
+              localStorage.setItem("loginState",JSON.stringify(true));
+
+              this.setState({
+                ...this.state,
+                socketConnection:{io: io},
+                signInInfo: {
+                  status: user.status,
+                  id : user.id,
+                  email: user.email,
+                  image : user.image
+                }
+              });
+            }
           }
         })
         .catch(err=> console.log(err))
       },
 
       getUnseenMessage: ()=>{
+        console.log("called");
         return apiClient.post('/messages/unseenmessages')
           .then (unseenInfo =>{
             this.setState({
@@ -160,6 +176,24 @@ export default class AppContextProvider extends Component {
   }
 }
 
+function ContextHoc(WrappedComponent) {
+  return function ContextHoc(props) {
+    return (
+      <AppContext.Consumer>
+        {
+          ({ state, actions }) => (
+            <WrappedComponent
+              state={state}
+              actions={actions}
+            />
+          )
+        }
+      </AppContext.Consumer>
+    )
+  }
+}
+
 export {
   AppContext,
+  ContextHoc
 };
