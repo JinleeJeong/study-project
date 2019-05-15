@@ -7,6 +7,9 @@ import {BrowserRouter} from 'react-router-dom';
 import AppContextProvider from '../src/contexts/appContext';
 
 const theme = createMuiTheme({
+    body:{
+        margin : 0
+    },
     typography: {
         useNextVariants : true,
         fontSize: 18,

@@ -11,19 +11,20 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
 import Paper from '@material-ui/core/Paper';
 import { green,red } from '@material-ui/core/colors';
-import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {Link} from 'react-router-dom';
 import FormControl from '@material-ui/core/FormControl';
 import Modal from '@material-ui/core/Modal';
-
+import img from '../../images/studyhub_vertical.PNG'
 const styles = theme => ({
 	container: {
 		display: 'flex',
 		flexDirection: "column",
 		margin: 20,
 		},
-
+		labelRoot: {
+			fontSize: 15
+		},
 		input:{
 		width: 100
 		},
@@ -71,7 +72,7 @@ const styles = theme => ({
 	},
 	form: {
 		width: '100%', // Fix IE 11 issue.
-		marginTop: theme.spacing.unit,
+		marginTop: 0,
 	},
 	submit: {
 		marginTop: theme.spacing.unit * 3,
@@ -94,12 +95,12 @@ const styles = theme => ({
 }});
 
 function getModalStyle() {
-	const top = 50
+	const top = 60
 
 	return {
 		top: `${top}%`,
 		position : "absolute",
-		width : "100%"
+		left : "39%"
 	};
 }
 
@@ -194,19 +195,21 @@ class login extends Component {
 			<div className="login" style={{minHeight : "100vh" ,margin: "0"}}>
 				<main className={classes.main}>
 					<CssBaseline />
-					<Paper className={classes.paper}>
+					<Paper className={classes.paper} style={{width:350, height: 450}}>
 						
-						<Avatar className={classes.avatar}>
-							<LockOutlinedIcon />				
-						</Avatar>
-						<Typography component="h1" variant="h5">
-							<div style = {{fontSize : "2.5vh", marginTop : "10px"}}>Sign in</div>
-						</Typography>
-							<form onSubmit = {this.onSubmit} className={classes.form}>
-							<FormControl margin="normal" required fullWidth>
+
+						 <img src={img} alt="logo" width ="100px"></img>	
+
+							<form onSubmit = {this.onSubmit} className={classes.form} style={{width : "70%"}}>
+							<FormControl margin="normal" required fullWidth style={{ marginTop : "2vh", marginBottom : 0}}>
 								<TextField
 								id= "emailInp"
-								label= "Email*"
+								InputLabelProps={{
+									FormLabelClasses : {
+										root : classes.labelRoot
+									}
+								}}
+								label="Email*"
 								className= {classes.textField}
 								value= {this.state.formFieldInput.email}
 								error= {this.state.formFieldValid.emailValid !== null ? true : null}
@@ -216,11 +219,16 @@ class login extends Component {
 								>
 								</TextField>
 							</FormControl>
-							<FormControl margin="normal" required fullWidth>
+							<FormControl margin="normal" required fullWidth style={{margin : 0}}>
 								<TextField
 								id= "passwordInp"
 								label= "Password*"
 								type="password"
+								InputLabelProps={{
+									FormLabelClasses : {
+										root : classes.labelRoot
+									}
+								}}
 								className= {classes.textField}
 								value= {this.state.formFieldInput.password}
 								error= {this.state.formFieldValid.passwordValid !== null ? true : null}
@@ -230,33 +238,33 @@ class login extends Component {
 								>
 								</TextField>
 								</FormControl>
-								<div style={{textAlign : "center", marginLeft : "2.6vh", marginRight : "2.6vh"}}>
+								<div style={{textAlign : "center"}}>
 								<Button
-									style = {{marginTop: 15, height: 40}}
+									style = {{marginTop: "3vh", height: 20, width: "100%"}}
 									className = {`${classes.Button} ${classes.ItemCenter}`}
 									type="submit"
 									fullWidth
 									color="primary"
 									variant="contained"
 								>
-									<div style={{fontSize : 15, color : "rgba(0, 0, 0, 0.54)"}}>로그인</div>
+									<div style={{fontSize : 15, color : "#37383a"}}>로그인</div>
 								</Button>
 
 								<Link to="/templates">
 								<Button
-									style = {{marginTop : 10, height: 40}}
+									style = {{marginTop : 10, height: 20, width: "100%"}}
 									className = {`${classes.Button} ${classes.ItemCenter}`}
 									fullWidth
 									color="primary"
 									variant="contained"
 									
 								>
-								<div style={{fontSize : 15, color : "rgba(0, 0, 0, 0.54)"}}>비회원 로그인</div>
+								<div style={{fontSize : 15, color : "#37383a"}}>비회원 로그인</div>
 								</Button>
 								</Link>
-								<div style={{textAlign : "right"}}>
+								<div style={{}}>
 								<Button
-									style = {{marginTop : 30, height: 40}}
+									style = {{marginTop : 10, height: 20, width:'100%'}}
 									color="secondary"
 									variant="contained"
 									onClick={this.handleOpen}
@@ -279,7 +287,7 @@ class login extends Component {
 							</form>
 					</Paper>
 					</main>
-					<p style={{textAlign : "center", color : "rgba(0, 0, 0, 0.54)"}}>Welcome to Study Hub<FavoriteBorder style={{marginLeft : "5px", fontSize : "12px", color : "red"}}/></p>
+					<p style={{textAlign : "center", color : "rgba(0, 0, 0, 0.54)", marginRight :"3vh"}}>Welcome to Study Hub<FavoriteBorder style={{marginLeft : "5px", fontSize : "12px", color : "red"}}/></p>
 			</div>
 		);
 	}

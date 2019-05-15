@@ -147,12 +147,12 @@ class Template extends Component {
             </video>
             <div className={classes.textButtonContainer}>
               <Typography
-                variant="h4"
+                variant="h5"
                 style={{ color: "white", fontWeight: 600 }}
               >
                 함께 하는 스터디의 동기부여
               </Typography>
-              <Typography variant="h6" style={{ color: "white" }}>
+              <Typography variant="h7" style={{ color: "white" }}>
                 손 쉽게 스터디그룹을 모집하거나 참여할 수 있습니다.
               </Typography>
               <div className={classes.heroButtons}>

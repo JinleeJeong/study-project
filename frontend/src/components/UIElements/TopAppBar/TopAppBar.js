@@ -3,14 +3,14 @@ import { withStyles, AppBar, Toolbar, Button, } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar/Avatar';
 import { AppContext } from '../../../contexts/appContext';
-
+import img from '../../../images/studyhub_horizontal.PNG'
 const styles = {
   root: {
     flexGrow: 1,
-    marginBottom: 1,
+    marginBottom: 0,
   },
   appBar: {
-    backgroundColor: '#263238',
+    backgroundColor: 'white',
   },
   grow: {
     flexGrow: 1,
@@ -42,13 +42,14 @@ class TopAppBar extends Component {
           <Toolbar>
             <div className={classes.grow}>
               <Link className={classes.link} to="/templates">
-                STUDYHUB
+                <img src={img} alt="logo" width="130px" style={{marginTop : 0}}></img>
               </Link>
             </div>
-            <Button className={classes.button} component={Link} to="/contents" style={{color: '#FFFFFF'}}>스터디 찾기</Button>
-            {this.context.state.signInInfo.status === false ? <div><Button className={classes.button} component={Link} to="/signup" style={{color: '#90CAF9'}}>회원가입</Button><Button className={classes.button} component={Link} to="/" style={{color: '#FFFFFF'}}> 로그인 </Button></div> : <Avatar/>}
+            <Button className={classes.button} component={Link} to="/contents" style={{color: '#263238'}}>스터디 찾기</Button>
+            {this.context.state.signInInfo.status === false ? <div><Button className={classes.button} component={Link} to="/signup" style={{color: '#90CAF9'}}>회원가입</Button><Button className={classes.button} component={Link} to="/" style={{color: '#263238'}}> 로그인 </Button></div> : <Avatar/>}
           </Toolbar>
         </AppBar>
+        <div style={{backgroundColor: '#273238', height: 20}}></div>
       </div>
     );
   }
